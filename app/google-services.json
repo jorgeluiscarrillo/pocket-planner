@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "618019163600",
+    "project_id": "pockeventtest"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:618019163600:android:43b2ce640a53563e",
+        "android_client_info": {
+          "package_name": "com.example.daehe.login"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "618019163600-2k622i740r0b4batu7audghmeqc82981.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "618019163600-3sv2d9nkc6ksbgsm1oflgd3mpartd8td.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.daehe.login",
+            "certificate_hash": "6389c76e443279a48ad4ec908b1bfebe65bf7b26"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBObgDLJawSv6FLbdMXDQ_74DKxPjCcv8M"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
