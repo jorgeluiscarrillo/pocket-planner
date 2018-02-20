@@ -40,6 +40,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private SignInButton signInButton;
     private Button signOutButton;
     private Button proceedButton;
+    private Button detour;
     private Button disconnectButton;
     private LinearLayout signOutView;
     private ProgressDialog mProgressDialog;
@@ -69,6 +70,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         btnFBLogin = (LoginButton) findViewById(R.id.facebook_sign_in_button);
         signInButton = (SignInButton) findViewById(R.id.google_sign_in_button);
         signOutButton = (Button) findViewById(R.id.sign_out_button);
+        detour = (Button) findViewById(R.id.detour);
 
         cbmFacebook = CallbackManager.Factory.create();
 
@@ -110,6 +112,14 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                         });
             }
 
+        });
+
+        detour.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent mapIntent = new Intent(LoginActivity.this, Map_Activity.class);
+                startActivity(mapIntent);
+            }
         });
 
         if(isGooglePlayServicesInstalled()) {
