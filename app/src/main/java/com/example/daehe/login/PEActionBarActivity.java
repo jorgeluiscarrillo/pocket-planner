@@ -15,6 +15,7 @@ import android.widget.ListView;
 public class PEActionBarActivity extends AppCompatActivity  {
 
     ActionBarDrawerToggle mDrawerToggle;
+    DrawerLayout mDrawerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -23,8 +24,7 @@ public class PEActionBarActivity extends AppCompatActivity  {
 
     protected void setMenuBar(int layout){
         setContentView(layout);
-        DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ListView menu = (ListView) findViewById(R.id.drawer);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.navigation_drawer_open, R.string.navigation_drawer_close){
@@ -38,6 +38,42 @@ public class PEActionBarActivity extends AppCompatActivity  {
                 super.onDrawerClosed(drawerView);
             }
         };
+
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(MenuItem menuItem) {
+                        // set item as selected to persist highlight
+                        menuItem.setChecked(true);
+                        // close drawer when item is tapped
+                        mDrawerLayout.closeDrawers();
+
+                        int id = menuItem.getItemId();
+                        // Add code here to update the UI based on the item selected
+                        // For example, swap UI fragments here
+                        if (id == R.id.nav_createEvent) {
+                            getFragmentManager().beginTransaction( )
+                                    .replace(R.id.contentframe
+                                            ,new EventFragment())
+                                    .commit();
+                            // Handle the camera action
+                        }
+                        else if (id == R.id.nav_other) {
+                            /*
+                            getFragmentManager().beginTransaction()
+                                    .replace(R.id.contentframe
+                                            , new otherF())
+                                    .commit();
+                                    */
+                        }
+                        else if (id == R.id.nav_message){
+
+                        }
+
+                        return true;
+                    }
+                });
 
         mDrawerLayout.addDrawerListener(mDrawerToggle);
     }

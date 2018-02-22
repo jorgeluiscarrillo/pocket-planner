@@ -47,7 +47,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".Map_Activity" />
-        <activity android:name=".PEActionBar"></activity>
+        <activity android:name=".PEActionBar" />
+        <activity android:name=".MessageActivity"></activity>
     </application>
 
 </manifest>

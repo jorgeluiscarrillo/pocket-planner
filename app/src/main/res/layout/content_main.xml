@@ -24,16 +24,8 @@
         app:headerLayout="@layout/nav_header_main"
         app:menu="@menu/activity_main_drawer" />
 
-    <LinearLayout
+    <FrameLayout
+        android:id="@+id/contentframe"
         android:layout_width="match_parent"
-        android:layout_height="500dp">
-        <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/map"
-            tools:context=".Map_Activity"
-            android:name="com.google.android.gms.maps.SupportMapFragment" />
-    </LinearLayout>
-
+        android:layout_height="match_parent"></FrameLayout>
 </android.support.v4.widget.DrawerLayout>
