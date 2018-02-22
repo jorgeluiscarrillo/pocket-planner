@@ -12,9 +12,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.login.Login;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.Auth;
@@ -71,13 +74,12 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         signInButton = (SignInButton) findViewById(R.id.google_sign_in_button);
         signOutButton = (Button) findViewById(R.id.sign_out_button);
         detour = (Button) findViewById(R.id.detour);
-
         cbmFacebook = CallbackManager.Factory.create();
 
         btnFBLogin.registerCallback(cbmFacebook, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-
+                updateUI(true);
             }
 
             @Override
@@ -170,6 +172,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             handleSignInResult(result);
         }
+
+        cbmFacebook.onActivityResult(requestCode, resultCode, data);
     }
 
 
@@ -187,9 +191,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         }
     }
 
-
-
-
     private void updateUI(boolean signedIn) {
         if (signedIn) {
             signInButton.setVisibility(View.GONE);
@@ -201,6 +202,10 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             btnFBLogin.setVisibility(View.VISIBLE);
             signOutButton.setVisibility(View.GONE);
             proceedButton.setVisibility(View.GONE);
+            if(isLoggedInFB())
+            {
+                LoginManager.getInstance().logOut();
+            }
         }
     }
 
@@ -247,4 +252,15 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         }
         return false;
     }
+
+    /**
+     * Checks login status of facebook accounts
+     * @return true if logged in false if null
+     */
+    public boolean isLoggedInFB()
+    {
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        return accessToken != null;
+    }
+
 }
