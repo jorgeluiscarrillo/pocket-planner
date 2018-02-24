@@ -16,7 +16,6 @@ import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
-import com.facebook.login.Login;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
@@ -31,9 +30,6 @@ import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.common.GoogleApiAvailability;
-
-import com.facebook.FacebookSdk;
-import com.facebook.appevents.AppEventsLogger;
 
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
@@ -119,8 +115,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         detour.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent mapIntent = new Intent(LoginActivity.this, Map_Activity.class);
-                startActivity(mapIntent);
+                Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
+                startActivity(mainIntent);
             }
         });
 
@@ -129,7 +125,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             proceedButton.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v){
-                    Intent mapIntent = new Intent(LoginActivity.this, Map_Activity.class);
+                    Intent mapIntent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(mapIntent);
                 }
             });
