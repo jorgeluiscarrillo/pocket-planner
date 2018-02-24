@@ -1,7 +1,5 @@
 package com.example.daehe.login;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.app.Fragment;
@@ -14,7 +12,7 @@ public class EventFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        myView=inflater.inflate(R.layout.fragment_createEvent,container,false);
+        myView=inflater.inflate(R.layout.fragment_create_event,container,false);
         return myView;
     }
 }

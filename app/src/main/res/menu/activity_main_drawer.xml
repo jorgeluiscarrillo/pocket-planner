@@ -14,9 +14,8 @@
         <!--android:icon="@drawable/ic_menu_camera"-->
 
         <item
-            android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="Gallery" />
+            android:id="@+id/nav_message"
+            android:title="Message" />
         <!--<item
             android:id="@+id/nav_slideshow"
             android:icon="@drawable/ic_menu_slideshow"

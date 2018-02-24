@@ -68,7 +68,7 @@ public class PEActionBarActivity extends AppCompatActivity  {
                                     */
                         }
                         else if (id == R.id.nav_message){
-
+                            getFragmentManager().beginTransaction().replace(R.id.contentframe, new MessageActivity()).commit();
                         }
 
                         return true;
