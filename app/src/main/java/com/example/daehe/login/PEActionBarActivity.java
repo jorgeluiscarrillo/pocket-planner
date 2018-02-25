@@ -21,7 +21,7 @@ public class PEActionBarActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState){
 
         super.onCreate(savedInstanceState);
-        
+
 
     }
 
@@ -81,15 +81,26 @@ public class PEActionBarActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem menuItem) {
         int id = menuItem.getItemId();
-        if(id == R.id.nav_createEvent){
-            Toast.makeText(this, "This is create event", Toast.LENGTH_SHORT).show();
+        switch (id) {
+            case R.id.nav_createEvent:
+                Toast.makeText(this, "This is create event", Toast.LENGTH_SHORT).show();
+                getSupportFragmentManager().beginTransaction( )
+                        .replace(R.id.contentframe, new EventFragment())
+                        .commit();
+                break;
+            case R.id.nav_other:
+                Toast.makeText(this, "This is other", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.nav_message:
+                Toast.makeText(this, "This is message", Toast.LENGTH_SHORT).show();
+                getSupportFragmentManager().beginTransaction( )
+                        .replace(R.id.contentframe, new MessageFragment())
+                        .commit();
+                break;
+            default:
+                return false;
         }
-        if(id == R.id.nav_other){
-            Toast.makeText(this, "This is other", Toast.LENGTH_SHORT).show();
-        }
-        if(id == R.id.nav_message){
-            Toast.makeText(this, "This is message", Toast.LENGTH_SHORT).show();
-        }
+        mDrawerLayout.closeDrawers();
         return false;
     }
 
