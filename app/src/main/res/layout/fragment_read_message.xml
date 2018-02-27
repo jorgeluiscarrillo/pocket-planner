@@ -1,0 +1,77 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/back_button"/>
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/reply_button"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context="com.example.daehe.login.ReadMessageFragment">
+
+
+        <TextView
+            android:id="@+id/etSender"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="textEnd"
+            android:layout_gravity="end"
+            android:textSize="20dp"
+            android:hint="Sender"/>
+
+        <TextView
+            android:id="@+id/etReceiver"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="textEnd"
+            android:layout_gravity="end"
+            android:textSize="20dp"
+            android:hint="Receiver"/>
+
+        <TextView
+            android:id="@+id/etDateTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="textEnd"
+            android:layout_gravity="end"
+            android:hint="MM/DD/YYYY HH:MM:SS"/>
+
+        <View style="@style/Divider"></View>
+
+        <EditText
+            android:id="@+id/etTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Message Title"/>
+
+        <View style="@style/Divider"></View>
+
+        <EditText
+            android:id="@+id/etBody"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Text Body"
+            android:inputType="textMultiLine" />
+
+    </LinearLayout>
+
+</RelativeLayout>
+

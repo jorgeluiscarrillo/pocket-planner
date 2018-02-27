@@ -31,4 +31,11 @@
     <style parent="ThemeOverlay.AppCompat.Dark.ActionBar" name="AppTheme.AppBarOverlay"/>
 
     <style parent="ThemeOverlay.AppCompat.Light" name="AppTheme.PopupOverlay"/>
+
+    <!--Divider-->
+    <style name="Divider">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">@color/colorPrimaryDark</item>
+    </style>
 </resources>
