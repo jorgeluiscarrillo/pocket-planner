@@ -1,5 +1,6 @@
 package com.example.daehe.login;
 
+import android.app.Fragment;
 import android.content.res.Configuration;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -11,6 +12,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import java.util.Map;
+
 public class PEActionBarActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -19,10 +22,7 @@ public class PEActionBarActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
-
         super.onCreate(savedInstanceState);
-
-
     }
 
     protected void setMenuBar(int layout){
@@ -82,11 +82,35 @@ public class PEActionBarActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem menuItem) {
         int id = menuItem.getItemId();
         switch (id) {
+            case R.id.home_button:
+                MapFragment mf = (MapFragment) getSupportFragmentManager().findFragmentByTag("MAP");
+                if(!(mf != null && mf.isVisible()))
+                {
+                    Toast.makeText(this, "Returning to home", Toast.LENGTH_SHORT).show();
+                    getSupportFragmentManager().beginTransaction( )
+                            .replace(R.id.contentframe, new MapFragment(), "MAP")
+                            .commit();
+                }
+                else
+                {
+                    Toast.makeText(this, "Already in home", Toast.LENGTH_SHORT).show();
+                }
+
+                break;
             case R.id.nav_createEvent:
-                Toast.makeText(this, "This is create event", Toast.LENGTH_SHORT).show();
-                getSupportFragmentManager().beginTransaction( )
-                        .replace(R.id.contentframe, new EventFragment())
-                        .commit();
+                EventFragment ef = (EventFragment) getSupportFragmentManager().findFragmentByTag("CreateEvent");
+                if(!(ef !=null && ef.isVisible()))
+                {
+                    Toast.makeText(this, "This is create event", Toast.LENGTH_SHORT).show();
+                    getSupportFragmentManager().beginTransaction( )
+                            .replace(R.id.contentframe, new EventFragment(), "CreateEvent")
+                            .commit();
+                }
+                else
+                {
+                    Toast.makeText(this, "Already creating an event", Toast.LENGTH_SHORT).show();
+                }
+
                 break;
             case R.id.nav_other:
                 Toast.makeText(this, "This is other", Toast.LENGTH_SHORT).show();

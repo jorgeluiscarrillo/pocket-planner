@@ -31,7 +31,7 @@ public class MainActivity extends PEActionBarActivity {
         setMenuBar(R.layout.activity_content);
 
         getSupportFragmentManager().beginTransaction( )
-                .replace(R.id.contentframe, new MapFragment())
+                .replace(R.id.contentframe, new MapFragment(), "MAP")
                 .commit();
     }
 }
