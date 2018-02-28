@@ -41,7 +41,7 @@ public class Message {
     public String getTitle() {return mTitle;}
     public User getSender() {return mSender;}
     public User getReceiver() {return mReceiver;}
-    public Date getDateAndTiem() {return mDateAndTime;}
+    public Date getDateAndTime() {return mDateAndTime;}
     public String getContent() {return mContent;}
     public boolean isImportant() {return mMarkAsImportant;}
     public boolean isRead() {return mRead;}

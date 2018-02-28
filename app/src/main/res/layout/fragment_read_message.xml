@@ -28,30 +28,31 @@
         tools:context="com.example.daehe.login.ReadMessageFragment">
 
 
-        <TextView
+        <EditText
             android:id="@+id/etSender"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAlignment="textEnd"
             android:layout_gravity="end"
-            android:textSize="20dp"
+            android:textSize="15dp"
             android:hint="Sender"/>
 
-        <TextView
+        <EditText
             android:id="@+id/etReceiver"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAlignment="textEnd"
             android:layout_gravity="end"
-            android:textSize="20dp"
+            android:textSize="15dp"
             android:hint="Receiver"/>
 
-        <TextView
+        <EditText
             android:id="@+id/etDateTime"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAlignment="textEnd"
             android:layout_gravity="end"
+            android:textSize="10dp"
             android:hint="MM/DD/YYYY HH:MM:SS"/>
 
         <View style="@style/Divider"></View>
