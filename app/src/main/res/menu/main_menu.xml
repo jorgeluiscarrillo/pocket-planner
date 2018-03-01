@@ -13,6 +13,12 @@
             android:id="@+id/nav_createEvent"
             android:title="Create Event" />
         <!--android:icon="@drawable/ic_menu_camera"-->
+
+        <item
+            android:id="@+id/nav_viewEvent"
+            android:title="View Events" />
+        <!--android:icon="@drawable/ic_menu_camera"-->
+
         <item
             android:id="@+id/nav_other"
             android:title="Other" />

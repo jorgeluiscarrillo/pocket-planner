@@ -8,13 +8,13 @@
         android:id="@+id/event_id"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="36dp"
-        android:layout_marginTop="40dp"
-        android:text="Event ID:"
-        android:layout_alignParentLeft="true"
-        android:layout_marginLeft="36dp" />
+        android:layout_marginLeft="12dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="37dp"
+        android:text="Event ID:" />
 
     <TextView
         android:id="@+id/event_name"
@@ -94,9 +94,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/event_check"
-        android:layout_toStartOf="@+id/textInputLayout3"
-        android:text="Confirm"
-        android:layout_toLeftOf="@+id/textInputLayout3" />
+        android:layout_centerHorizontal="true"
+        android:text="Confirm" />
 
     <TextView
         android:id="@+id/event_check"
@@ -123,7 +122,8 @@
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/textView3"
         android:layout_alignStart="@+id/textInputLayout3"
-        android:layout_alignLeft="@+id/textInputLayout3">
+        android:layout_alignLeft="@+id/textInputLayout3"
+        android:id="@+id/textInputLayout5">
 
         <android.support.design.widget.TextInputEditText
             android:id="@+id/input_date"
