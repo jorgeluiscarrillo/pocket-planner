@@ -34,25 +34,39 @@
             android:id="@+id/google_sign_in_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="visible"
-            tools:visibility="gone" />
+            android:layout_alignParentTop="true"
+            android:layout_toEndOf="@+id/proceed"
+            android:layout_toRightOf="@+id/proceed"
+            android:visibility="visible" />
+            /tools:visibility="gone" />
 
-        <com.facebook.login.widget.LoginButton
+        <com.facebook.login.widget.LoginButton xmlns:facebook="http://schemas.android.com/apk/res-auto"
             android:id="@+id/facebook_sign_in_button"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginTop="70dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/google_sign_in_button"
+            android:layout_marginTop="11dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="3.5dp"
+            android:paddingBottom="11dp"
+            android:paddingTop="11dp"
             android:visibility="visible"
-            tools:visibility="gone"/>
+            facebook:com_facebook_login_text="Sign in with Facebook" />
+            /tools:visibility="gone"/>
 
         <Button
             android:id="@+id/sign_out_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/proceed"
+            android:layout_toLeftOf="@+id/proceed"
+            android:layout_toStartOf="@+id/proceed"
             android:text="@string/sign_out"
             android:theme="@style/ThemeOverlay.MyDarkButton"
             android:visibility="visible"
-            tools:visibility="gone"/>
+            tools:visibility="gone" />
 
         <Button
             android:layout_width="match_parent"
