@@ -11,12 +11,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 
 import java.util.ArrayList;
 
 public class MessageFragment extends Fragment {
     View myView;
+    ArrayList<Message> msgs;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -24,14 +26,14 @@ public class MessageFragment extends Fragment {
 
         loadInbox();
 
-        //loadButton();
+        loadButton();
 
         return myView;
     }
 
     private void loadInbox(){
         ListView lvInbox = (ListView) myView.findViewById(R.id.lvInbox);
-        ArrayList<Message> msgs = new ArrayList<Message>();
+        msgs = new ArrayList<Message>();
         msgs.add(
                 new Message(
                         "Test",
@@ -48,20 +50,24 @@ public class MessageFragment extends Fragment {
         lvInbox.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                ReadMessageFragment rmf = new ReadMessageFragment();
+                rmf.setMessage(msgs.get(i));
+                rmf.setReadOnly(true);
                 getActivity().getSupportFragmentManager().beginTransaction( )
-                        .replace(R.id.contentframe, new ReadMessageFragment())
+                        .replace(R.id.contentframe, rmf)
                         .commit();
             }
         });
     }
 
     private void loadButton(){
-        Button btn = (Button) myView.findViewById(R.id.ibCompose);
+        ImageButton btn = (ImageButton) myView.findViewById(R.id.ibCompose);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                ReadMessageFragment rmf = new ReadMessageFragment();
                 getActivity().getSupportFragmentManager().beginTransaction( )
-                        .replace(R.id.contentframe, new ReadMessageFragment())
+                        .replace(R.id.contentframe, rmf)
                         .commit();
             }
         });
