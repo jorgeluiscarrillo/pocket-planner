@@ -3,6 +3,7 @@ package com.example.daehe.login;
 import android.app.ProgressDialog;
 import android.app.Dialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,6 +22,7 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
@@ -36,6 +38,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
     private static final String TAG = "LoginActivity";
     private int RC_SIGN_IN = 0;
+    private User user = null;
     private GoogleApiClient mGoogleApiClient;
     private SignInButton signInButton;
     private Button signOutButton;
@@ -67,6 +70,16 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 .addApi(Auth.GOOGLE_SIGN_IN_API,gso)
                 .build();
 
+/*
+        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
+        if (acct != null) {
+            String name = acct.getDisplayName();
+            String email = acct.getEmail();
+            String id = acct.getId();
+            Uri photo = acct.getPhotoUrl();
+            user = new User(name, email, id, photo);
+        }
+*/
         btnFBLogin = (LoginButton) findViewById(R.id.facebook_sign_in_button);
         signInButton = (SignInButton) findViewById(R.id.google_sign_in_button);
         signOutButton = (Button) findViewById(R.id.sign_out_button);

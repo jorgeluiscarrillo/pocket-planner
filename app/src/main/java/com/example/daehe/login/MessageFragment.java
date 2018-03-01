@@ -37,7 +37,7 @@ public class MessageFragment extends Fragment {
         msgs.add(
                 new Message(
                         "Test",
-                        new User("Daehee", "email@email.com"),
+                        new User("Daehee", "email@email.com", null, null),
                         new User(),
                         "Test"
                 )
