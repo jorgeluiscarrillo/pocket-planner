@@ -3,8 +3,11 @@ package com.example.daehe.login;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,26 +16,45 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * Created by Bryan on 2/28/2018.
  */
 
 public class EventDialog extends Dialog {
+    String eventName;
+    String eventLoc;
+    String eventDate;
     public Activity c;
     public Dialog d;
     public Button add;
+    FirebaseFirestore db;
     EditText date;
     Calendar myCalendar = Calendar.getInstance();
+    EditText id;
+    EditText name;
+    EditText location;
+    Button confirm;
 
     public EventDialog(Activity a)
     {
         super(a);
         this.c = a;
+        db = FirebaseFirestore.getInstance();
     }
 
     public void ShowDialog()
@@ -41,13 +63,15 @@ public class EventDialog extends Dialog {
         d.requestWindowFeature(Window.FEATURE_NO_TITLE);
         d.setContentView(R.layout.fragment_create_event);
 
-        final EditText id=(EditText) findViewById(R.id.input_id);
-        final EditText name=(EditText) findViewById(R.id.input_name);
-        final EditText location=(EditText) d.findViewById(R.id.input_location);
+        id=(EditText) d.findViewById(R.id.input_id);
+        name=(EditText) d.findViewById(R.id.input_name);
+        location=(EditText) d.findViewById(R.id.input_location);
         date =(EditText) d.findViewById(R.id.input_date);
 
+
+
         final TextView check=(TextView) d.findViewById(R.id.event_check);
-        final Button confirm=(Button) d.findViewById(R.id.event_button);
+        confirm=(Button) d.findViewById(R.id.event_button);
 
         final DatePickerDialog.OnDateSetListener datePick = new DatePickerDialog.OnDateSetListener() {
             @Override
@@ -58,6 +82,7 @@ public class EventDialog extends Dialog {
                 updateLabel();
             }
         };
+
 
         date.setOnClickListener(new View.OnClickListener() {
 
@@ -75,17 +100,91 @@ public class EventDialog extends Dialog {
             checkdate=false;
         }*/
         confirm.setOnClickListener(new View.OnClickListener() {
-                                       @Override
-                                       public void onClick(View v) {
-                                           int num1=Integer.parseInt(id.getText().toString().trim());
-                                           int num2=Integer.parseInt((name.getText().toString().trim()));
-                                           int sum=0;
-                                           sum=num1+num2;
+            @Override
+            public void onClick(View v) {
+                eventName = name.getText().toString();
+                eventLoc = location.getText().toString();
+                eventDate = date.getText().toString();
 
-                                           check.setText(String.valueOf(sum));
-                                       }
-                                   }
-        );
+                if(eventName.equals("") && eventLoc.equals("") && eventDate.equals(""))
+                {
+                    Toast.makeText(c, "Name, Location, Date is blank", Toast.LENGTH_SHORT).show();
+                }
+                else if(eventName.equals("") && eventLoc.equals(""))
+                {
+                    Toast.makeText(c, "Name and Location is blank", Toast.LENGTH_SHORT).show();
+                }
+                else if(eventName.equals("") && eventDate.equals(""))
+                {
+                    Toast.makeText(c, "Name and Date is blank", Toast.LENGTH_SHORT).show();
+                }
+                else if(eventLoc.equals("") && eventDate.equals(""))
+                {
+                    Toast.makeText(c, "Location and Date is blank", Toast.LENGTH_SHORT).show();
+                }
+                else if(eventName.equals(""))
+                {
+                    Toast.makeText(c, "Name is blank", Toast.LENGTH_SHORT).show();
+                }
+                else if(eventDate.equals(""))
+                {
+                    Toast.makeText(c, "Date is blank", Toast.LENGTH_SHORT).show();
+                }
+                else if(eventLoc.equals(""))
+                {
+                    Toast.makeText(c, "Location is blank", Toast.LENGTH_SHORT).show();
+                }
+                else
+                {
+                    String myFormat = "MM/dd/yy";
+                    Date inputDate = null;
+                    SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+                    try{
+                        inputDate = sdf.parse(eventDate);
+                    }
+                    catch(ParseException e)
+                    {
+
+                    }
+                    Event e = new Event(eventName,eventLoc,inputDate,"","","","");
+                    /*
+                    db.collection("Events").document("event").set(e).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Toast.makeText(c, "Event successfully created!", Toast.LENGTH_SHORT).show();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(c, "ERROR" +e.toString(),
+                                            Toast.LENGTH_SHORT).show();
+                            Log.d("TAG", e.toString());
+                        }
+                    });*/
+
+                    db.collection("User Events")
+                            .add(e)
+                            .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                @Override
+                                public void onSuccess(DocumentReference documentReference) {
+                                    Toast.makeText(c, "Event successfully created!", Toast.LENGTH_SHORT).show();
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(c, "ERROR" +e.toString(),
+                                            Toast.LENGTH_SHORT).show();
+                                    Log.d("TAG", e.toString());
+                                }
+                            });
+
+                    d.dismiss();
+
+                }
+
+            }
+        });
         d.show();
 
         Window window = d.getWindow();
