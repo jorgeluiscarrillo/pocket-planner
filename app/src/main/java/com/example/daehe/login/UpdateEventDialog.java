@@ -3,55 +3,44 @@ package com.example.daehe.login;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.content.Context;
-import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 
 /**
- * Created by Bryan on 2/28/2018.
+ * Created by Bryan on 3/6/2018.
  */
 
-public class EventDialog extends Dialog {
+public class UpdateEventDialog extends Dialog {
     private String eventName;
     private String eventLoc;
     private String eventDate;
     private Activity c;
     private Dialog d;
     private FirebaseFirestore db;
+    private TextView title;
     private EditText date;
     private Calendar myCalendar = Calendar.getInstance();
     private EditText name;
     private EditText location;
     private Button confirm;
+    private Event updatedEvent;
 
-    public EventDialog(Activity a)
+    public UpdateEventDialog(Activity a, Event e)
     {
         super(a);
         this.c = a;
+        updatedEvent = e;
         db = FirebaseFirestore.getInstance();
     }
 
@@ -61,10 +50,20 @@ public class EventDialog extends Dialog {
         d.requestWindowFeature(Window.FEATURE_NO_TITLE);
         d.setContentView(R.layout.fragment_create_event);
 
+        title = (TextView) d.findViewById(R.id.dialog_title);
         name=(EditText) d.findViewById(R.id.input_name);
         location=(EditText) d.findViewById(R.id.input_location);
         date =(EditText) d.findViewById(R.id.input_date);
         confirm=(Button) d.findViewById(R.id.event_button);
+
+        String myFormat = "MM/dd/yy";
+        Date eDate = updatedEvent.getDate();
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+
+        title.setText("Update Event");
+        name.setText(updatedEvent.getName());
+        location.setText(updatedEvent.getLocation());
+        date.setText(sdf.format(eDate));
 
         final DatePickerDialog.OnDateSetListener datePick = new DatePickerDialog.OnDateSetListener() {
             @Override
@@ -77,6 +76,7 @@ public class EventDialog extends Dialog {
         };
 
         date.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
@@ -133,39 +133,19 @@ public class EventDialog extends Dialog {
                     {
 
                     }
-                    Event e = new Event(eventName,eventLoc,inputDate,"","","","", Calendar.getInstance().getTime());
-                    /*
-                    db.collection("Events").document("event").set(e).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Toast.makeText(c, "Event successfully created!", Toast.LENGTH_SHORT).show();
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(c, "ERROR" +e.toString(),
-                                            Toast.LENGTH_SHORT).show();
-                            Log.d("TAG", e.toString());
-                        }
-                    });*/
+                    updatedEvent.setName(eventName);
+                    updatedEvent.setLocation(eventLoc);
+                    updatedEvent.setDate(inputDate);
 
-                    DocumentReference doc = db.collection("Events")
-                            .document("user")
-                            .collection("Events")
-                            .document();
+                    int pos = MainActivity.events.indexOf(updatedEvent);
 
                     db.collection("Events")
                             .document("user")
                             .collection("Events")
-                            .document(doc.getId())
-                            .set(e);
-
-                    MainActivity.events.add(e);
-                    MainActivity.ids.add(doc.getId());
+                            .document(MainActivity.ids.get(pos))
+                            .set(updatedEvent);
                     d.dismiss();
-
                 }
-
             }
         });
         d.show();
@@ -179,5 +159,4 @@ public class EventDialog extends Dialog {
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
         date.setText(sdf.format(myCalendar.getTime()));
     }
-
 }

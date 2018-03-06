@@ -8,6 +8,7 @@ public class User {
     private String mName;
     private String mEmail;
 
+
     public User(){
         mName = "";
         mEmail = "";

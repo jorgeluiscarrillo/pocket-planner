@@ -1,6 +1,7 @@
 package com.example.daehe.login;
 
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.res.Configuration;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -12,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 public class PEActionBarActivity extends AppCompatActivity
@@ -120,11 +122,32 @@ public class PEActionBarActivity extends AppCompatActivity
                         .replace(R.id.contentframe, new MessageFragment())
                         .commit();
                 break;
+            case R.id.nav_viewEvent:
+                Toast.makeText(this,"Viewing events", Toast.LENGTH_SHORT).show();
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.contentframe, new ViewEventFragment())
+                        .addToBackStack(null)
+                        .commit();
+                break;
             default:
                 return false;
         }
         mDrawerLayout.closeDrawers();
         return false;
     }
+
+    public void onBackPressed()
+    {
+        FragmentManager fm = getFragmentManager();
+        if(fm.getBackStackEntryCount()>0)
+        {
+            fm.popBackStack();
+        }
+        else
+        {
+            super.onBackPressed();
+        }
+    }
+
 
 }
