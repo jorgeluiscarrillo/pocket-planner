@@ -1,0 +1,79 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+        <Button
+            android:id="@+id/update_event"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/update_event_button"/>
+
+        <Button
+            android:id="@+id/delete_event"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/delete_event_button"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context="com.example.daehe.login.ReadEventFragment">
+
+
+        <TextView
+            android:id="@+id/re_eventName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="textStart"
+            android:layout_gravity="start"
+            android:textSize="20dp"
+            android:hint="Event Name"/>
+
+        <TextView
+            android:id="@+id/re_eventOwner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="textStart"
+            android:layout_gravity="start"
+            android:textSize="20dp"
+            android:hint="Owner"/>
+
+        <TextView
+            android:id="@+id/re_eventDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="textStart"
+            android:layout_gravity="start"
+            android:hint="MM/DD/YYYY HH:MM:SS"/>
+
+        <View style="@style/Divider"></View>
+
+        <TextView
+            android:id="@+id/re_eventLoc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Message Title"/>
+
+        <View style="@style/Divider"></View>
+
+        <TextView
+            android:id="@+id/re_eventDes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Event Description"
+            android:inputType="textMultiLine" />
+
+    </LinearLayout>
+
+</RelativeLayout>
+

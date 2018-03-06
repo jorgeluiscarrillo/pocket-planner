@@ -24,6 +24,8 @@
     <string name="proceed">Proceed</string>
     <string name="disconnect">Disconnect</string>
 
+    <string name="update_event_button">Update</string>
+    <string name="delete_event_button">Delete</string>
     <!-- Content Description for images -->
     <string name="desc_google_icon">Google Logo</string>
 

@@ -108,6 +108,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             }
 
         });
+        setGooglePlusButtonText(signInButton, "Sign in with Google");
 
         signOutButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -141,8 +142,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 }
             });
         }
-
-        setGooglePlusButtonText(signInButton, "Sign in with Google");
     }
 
 

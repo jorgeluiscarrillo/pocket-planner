@@ -12,6 +12,7 @@ public class User {
     private String mID;
     private Uri mImage;
 
+
     public User(){
         mName = "";
         mEmail = "";

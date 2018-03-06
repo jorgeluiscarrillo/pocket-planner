@@ -27,6 +27,10 @@
         <item
             android:id="@+id/nav_message"
             android:title="Message" />
+
+        <item
+            android:id="@+id/nav_signOut"
+            android:title="Sign Out" />
         <!--<item
             android:id="@+id/nav_slideshow"
             android:icon="@drawable/ic_menu_slideshow"

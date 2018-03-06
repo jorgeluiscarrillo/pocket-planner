@@ -1,6 +1,7 @@
 package com.example.daehe.login;
 
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -19,10 +20,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+<<<<<<< HEAD
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 
 import java.io.InputStream;
+=======
+import java.util.ArrayList;
+>>>>>>> origin/BryanD
 import java.util.Map;
 
 public class PEActionBarActivity extends AppCompatActivity
@@ -126,11 +131,32 @@ public class PEActionBarActivity extends AppCompatActivity
                         .replace(R.id.contentframe, new MessageFragment())
                         .commit();
                 break;
+            case R.id.nav_viewEvent:
+                Toast.makeText(this,"Viewing events", Toast.LENGTH_SHORT).show();
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.contentframe, new ViewEventFragment())
+                        .addToBackStack(null)
+                        .commit();
+                break;
             default:
                 return false;
         }
         mDrawerLayout.closeDrawers();
         return false;
     }
+
+    public void onBackPressed()
+    {
+        FragmentManager fm = getFragmentManager();
+        if(fm.getBackStackEntryCount()>0)
+        {
+            fm.popBackStack();
+        }
+        else
+        {
+            super.onBackPressed();
+        }
+    }
+
 
 }
