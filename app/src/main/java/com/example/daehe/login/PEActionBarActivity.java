@@ -126,7 +126,7 @@ public class PEActionBarActivity extends AppCompatActivity
                 Toast.makeText(this,"Viewing events", Toast.LENGTH_SHORT).show();
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.contentframe, new ViewEventFragment())
-                        .addToBackStack(null)
+                        //.addToBackStack(null)
                         .commit();
                 break;
             default:
