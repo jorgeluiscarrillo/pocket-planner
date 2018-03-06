@@ -117,6 +117,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
                 .addApi(Places.GEO_DATA_API)
                 .addApi(Places.PLACE_DETECTION_API)
                 .enableAutoManage((FragmentActivity) mContext, this)
+
                 .build();
 
         mSearchText.setOnItemClickListener(mAutoCompleteClickListener);
@@ -299,5 +300,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     private void hideSoftKeyboard() {
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mGoogleApiClient.stopAutoManage(getActivity());
+        mGoogleApiClient.disconnect();
     }
 }
