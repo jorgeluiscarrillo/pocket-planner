@@ -70,17 +70,10 @@ public class PEActionBarActivity extends AppCompatActivity
         }
 
         View hView =  navigationView.getHeaderView(0);
-        new DownloadImageTask((ImageView) hView.findViewById(R.id.nav_image_view)).execute(user.getImage().toString());
+        if(user.getImage() != null)
+            new DownloadImageTask((ImageView) hView.findViewById(R.id.nav_image_view)).execute(user.getImage().toString());
         TextView navTxt = (TextView)hView.findViewById(R.id.nav_text_view);
         navTxt.setText(user.getName());
-
-        //ImageView navImg = (ImageView) navigationView.findViewById(R.id.nav_image_view);
-
-        //new DownloadImageTask((ImageView) findViewById(R.id.nav_image_view)).execute(acct.getPhotoUrl().toString());
-
-        //TextView navTxt = (TextView) navigationView.findViewById(R.id.nav_text_view);
-
-        //navTxt.setText(acct.getDisplayName());
     }
 
     @Override
