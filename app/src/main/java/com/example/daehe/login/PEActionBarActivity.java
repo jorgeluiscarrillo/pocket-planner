@@ -2,16 +2,27 @@ package com.example.daehe.login;
 
 import android.app.Fragment;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+
+import java.io.InputStream;
 import java.util.Map;
 
 public class PEActionBarActivity extends AppCompatActivity
@@ -19,6 +30,7 @@ public class PEActionBarActivity extends AppCompatActivity
 
     private ActionBarDrawerToggle mToggle;
     private DrawerLayout mDrawerLayout;
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -46,6 +58,29 @@ public class PEActionBarActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         mToggle.syncState();
+
+
+        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
+        if (acct != null) {
+            String name = acct.getDisplayName();
+            String email = acct.getEmail();
+            String id = acct.getId();
+            Uri photo = acct.getPhotoUrl();
+            user = new User(name, email, id, photo);
+        }
+
+        View hView =  navigationView.getHeaderView(0);
+        new DownloadImageTask((ImageView) hView.findViewById(R.id.nav_image_view)).execute(user.getImage().toString());
+        TextView navTxt = (TextView)hView.findViewById(R.id.nav_text_view);
+        navTxt.setText(user.getName());
+
+        //ImageView navImg = (ImageView) navigationView.findViewById(R.id.nav_image_view);
+
+        //new DownloadImageTask((ImageView) findViewById(R.id.nav_image_view)).execute(acct.getPhotoUrl().toString());
+
+        //TextView navTxt = (TextView) navigationView.findViewById(R.id.nav_text_view);
+
+        //navTxt.setText(acct.getDisplayName());
     }
 
     @Override

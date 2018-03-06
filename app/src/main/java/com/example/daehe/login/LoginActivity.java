@@ -3,7 +3,11 @@ package com.example.daehe.login;
 import android.app.ProgressDialog;
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
+import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -34,6 +38,8 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.common.GoogleApiAvailability;
 
+import java.io.InputStream;
+
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
     private static final String TAG = "LoginActivity";
@@ -47,6 +53,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private Button disconnectButton;
     private LinearLayout signOutView;
     private ProgressDialog mProgressDialog;
+    GoogleSignInAccount acct;
     private ImageView pe_logo;
     private static final int ERROR_DIALOG_REQUEST = 9001;
     private LoginButton btnFBLogin;
@@ -70,16 +77,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 .addApi(Auth.GOOGLE_SIGN_IN_API,gso)
                 .build();
 
-/*
-        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
-        if (acct != null) {
-            String name = acct.getDisplayName();
-            String email = acct.getEmail();
-            String id = acct.getId();
-            Uri photo = acct.getPhotoUrl();
-            user = new User(name, email, id, photo);
-        }
-*/
         btnFBLogin = (LoginButton) findViewById(R.id.facebook_sign_in_button);
         signInButton = (SignInButton) findViewById(R.id.google_sign_in_button);
         signOutButton = (Button) findViewById(R.id.sign_out_button);
@@ -193,7 +190,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         Log.d(TAG, "handleSignInResult:" + result.isSuccess());
         if (result.isSuccess()) {
             // Signed in successfully, show authenticated UI.
-            GoogleSignInAccount acct = result.getSignInAccount();
+            acct = result.getSignInAccount();
             //Similarly you can get the email and photourl using acct.getEmail() and  acct.getPhotoUrl()
 
             updateUI(true);
@@ -287,5 +284,5 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             }
         }
     }
-
 }
+
