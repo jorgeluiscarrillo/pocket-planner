@@ -133,7 +133,7 @@ public class EventDialog extends Dialog {
                     {
 
                     }
-                    Event e = new Event(eventName,eventLoc,inputDate,"","","","", Calendar.getInstance().getTime());
+                    Event e = new Event(eventName,eventLoc,inputDate,"","","","", Calendar.getInstance().getTime(), false);
                     /*
                     db.collection("Events").document("event").set(e).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override

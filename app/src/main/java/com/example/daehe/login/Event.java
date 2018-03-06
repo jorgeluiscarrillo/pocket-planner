@@ -16,10 +16,11 @@ public class Event {
     private String endTime;
     private String owner;
     private Date timeMade;
+    private Boolean isPrivate;
 
     public Event() {}
 
-    public Event(String n, String l, Date d, String des, String st, String et, String o, Date ct) {
+    public Event(String n, String l, Date d, String des, String st, String et, String o, Date ct, Boolean p) {
         name = n;
         location = l;
         date = d;
@@ -28,6 +29,7 @@ public class Event {
         endTime = et;
         owner = o;
         timeMade = ct;
+        isPrivate = p;
     }
 
     public String getName() {
@@ -60,6 +62,8 @@ public class Event {
     }
 
     public Date getTimeMade() { return timeMade; }
+
+    public Boolean getIsPrivate() {return isPrivate;}
 
     public void setDate(Date date) {
         this.date = date;
