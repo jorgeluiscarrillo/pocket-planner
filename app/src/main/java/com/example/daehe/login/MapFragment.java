@@ -305,7 +305,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     @Override
     public void onPause() {
         super.onPause();
-        mGoogleApiClient.stopAutoManage(getActivity());
-        mGoogleApiClient.disconnect();
+        android.support.v4.app.FragmentManager fm = getFragmentManager();
+        if(fm.getBackStackEntryCount()!=0)
+        {
+            mGoogleApiClient.stopAutoManage(getActivity());
+            mGoogleApiClient.disconnect();
+        }
     }
 }
