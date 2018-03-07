@@ -113,13 +113,22 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         signOutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
-                        new ResultCallback<Status>() {
-                            @Override
-                            public void onResult(Status status) {
-                                updateUI(false);
-                            }
-                        });
+                if(mGoogleApiClient != null && mGoogleApiClient.isConnected())
+                {
+                    Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
+                            new ResultCallback<Status>() {
+                                @Override
+                                public void onResult(Status status) {
+                                    updateUI(false);
+                                }
+                            });
+                }
+                if (isLoggedInFB())
+                {
+
+                    LoginManager.getInstance().logOut();
+                    updateUI(false);
+                }
             }
 
         });
@@ -200,7 +209,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     }
 
     private void updateUI(boolean signedIn) {
-        if (signedIn) {
+        if (signedIn || isLoggedInFB()) {
             signInButton.setVisibility(View.GONE);
             btnFBLogin.setVisibility(View.GONE);
             signOutButton.setVisibility(View.VISIBLE);
@@ -210,10 +219,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             btnFBLogin.setVisibility(View.VISIBLE);
             signOutButton.setVisibility(View.GONE);
             proceedButton.setVisibility(View.GONE);
-            if(isLoggedInFB())
-            {
-                LoginManager.getInstance().logOut();
-            }
         }
     }
 
