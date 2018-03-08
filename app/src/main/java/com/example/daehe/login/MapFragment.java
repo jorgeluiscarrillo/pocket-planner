@@ -117,7 +117,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
                 .addApi(Places.GEO_DATA_API)
                 .addApi(Places.PLACE_DETECTION_API)
                 .enableAutoManage((FragmentActivity) mContext, this)
-
                 .build();
 
         mSearchText.setOnItemClickListener(mAutoCompleteClickListener);
@@ -306,7 +305,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     public void onPause() {
         super.onPause();
         android.support.v4.app.FragmentManager fm = getFragmentManager();
-        if(fm.getBackStackEntryCount()!=0)
+        if(mLocationPermissionsGranted)
         {
             mGoogleApiClient.stopAutoManage(getActivity());
             mGoogleApiClient.disconnect();

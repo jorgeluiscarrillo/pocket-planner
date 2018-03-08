@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,9 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 /**
  * Created by Bryan on 3/5/2018.
@@ -49,6 +53,7 @@ public class ReadEventFragment extends Fragment {
         bUpdate = (Button) myView.findViewById(R.id.update_event);
         bDelete = (Button) myView.findViewById(R.id.delete_event);
 
+        DateFormat dateFormat = new SimpleDateFormat("EEEE MMMM dd, yyyy hh:mm aa zzz ");
         db = FirebaseFirestore.getInstance();
 
         if(event != null)
@@ -56,18 +61,16 @@ public class ReadEventFragment extends Fragment {
             eventName.setText(event.getName());
             eventOwner.setText(event.getOwner());
             eventLoc.setText(event.getLocation());
-            eventDate.setText(event.getDate().toString());
+            eventDate.setText(dateFormat.format(event.getDate()));
             eventDesc.setText("Description goes here");
         }
 
         bUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                UpdateEventDialog upd = new UpdateEventDialog(getActivity(), event);
-                upd.ShowDialog();
-
                 FragmentManager fm = getFragmentManager();
-                fm.popBackStack();
+                UpdateEventDialog upd = new UpdateEventDialog(getActivity(), event, fm);
+                upd.ShowDialog();
             }
         });
 

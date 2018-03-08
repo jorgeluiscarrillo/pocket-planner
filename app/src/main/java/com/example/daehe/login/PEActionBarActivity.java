@@ -83,9 +83,9 @@ public class PEActionBarActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem menuItem) {
         int id = menuItem.getItemId();
+        MapFragment mf = (MapFragment) getSupportFragmentManager().findFragmentByTag("MAP");
         switch (id) {
             case R.id.home_button:
-                MapFragment mf = (MapFragment) getSupportFragmentManager().findFragmentByTag("MAP");
                 if(!(mf != null && mf.isVisible()))
                 {
                     Toast.makeText(this, "Returning to home", Toast.LENGTH_SHORT).show();
@@ -119,15 +119,24 @@ public class PEActionBarActivity extends AppCompatActivity
             case R.id.nav_message:
                 Toast.makeText(this, "This is message", Toast.LENGTH_SHORT).show();
                 getSupportFragmentManager().beginTransaction( )
-                        .replace(R.id.contentframe, new MessageFragment())
+                        .replace(R.id.contentframe, new MessageFragment(), "Message")
                         .commit();
                 break;
             case R.id.nav_viewEvent:
                 Toast.makeText(this,"Viewing events", Toast.LENGTH_SHORT).show();
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.contentframe, new ViewEventFragment())
-                        .addToBackStack(null)
-                        .commit();
+                if(!(mf != null && mf.isVisible()))
+                {
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.contentframe, new ViewEventFragment(), "View Event")
+                            .commit();
+                }
+                else
+                {
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.contentframe, new ViewEventFragment(), "View Event")
+                            .addToBackStack(null)
+                            .commit();
+                }
                 break;
             default:
                 return false;
@@ -139,7 +148,7 @@ public class PEActionBarActivity extends AppCompatActivity
     public void onBackPressed()
     {
         FragmentManager fm = getFragmentManager();
-        if(fm.getBackStackEntryCount()>0)
+        if(fm.getBackStackEntryCount()>0 )
         {
             fm.popBackStack();
         }

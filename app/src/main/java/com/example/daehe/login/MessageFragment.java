@@ -67,7 +67,7 @@ public class MessageFragment extends Fragment {
             public void onClick(View view) {
                 ReadMessageFragment rmf = new ReadMessageFragment();
                 getActivity().getSupportFragmentManager().beginTransaction( )
-                        .replace(R.id.contentframe, rmf)
+                        .replace(R.id.contentframe, rmf, "Read Message")
                         .commit();
             }
         });

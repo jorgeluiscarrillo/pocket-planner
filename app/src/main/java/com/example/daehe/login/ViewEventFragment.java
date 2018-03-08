@@ -43,7 +43,7 @@ public class ViewEventFragment extends Fragment {
                 ReadEventFragment ref = new ReadEventFragment();
                 ref.setEvent(MainActivity.events.get(i));
                 getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.contentframe,ref)
+                        .replace(R.id.contentframe,ref, "Read Event")
                         .addToBackStack(null)
                         .commit();
             }
