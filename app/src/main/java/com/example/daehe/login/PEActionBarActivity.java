@@ -9,6 +9,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -59,6 +61,12 @@ public class PEActionBarActivity extends AppCompatActivity
             Uri photo = acct.getPhotoUrl();
             user = new User(name, email, photo, new ArrayList<Message>(), new ArrayList<Event>());
         }
+
+        View hView =  navigationView.getHeaderView(0);
+        if(user.getImage() != null)
+            new DownloadImageTask((ImageView) hView.findViewById(R.id.nav_image_view)).execute(user.getImage().toString());
+        TextView navTxt = (TextView)hView.findViewById(R.id.nav_text_view);
+        navTxt.setText(user.getName());
     }
 /*
     @Override
@@ -130,9 +138,20 @@ public class PEActionBarActivity extends AppCompatActivity
                 break;
             case R.id.nav_message:
                 Toast.makeText(this, "This is message", Toast.LENGTH_SHORT).show();
-                getSupportFragmentManager().beginTransaction( )
-                        .replace(R.id.contentframe, new MessageFragment(), "Message")
-                        .commit();
+
+                if(!(mf != null && mf.isVisible()))
+                {
+                    getSupportFragmentManager().beginTransaction( )
+                            .replace(R.id.contentframe, new MessageFragment(), "Message")
+                            .commit();
+                }
+                else
+                {
+                    getSupportFragmentManager().beginTransaction( )
+                            .replace(R.id.contentframe, new MessageFragment(), "Message")
+                            .addToBackStack(null)
+                            .commit();
+                }
                 break;
             case R.id.nav_viewEvent:
                 Toast.makeText(this,"Viewing events", Toast.LENGTH_SHORT).show();
