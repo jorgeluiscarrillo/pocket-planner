@@ -148,7 +148,7 @@ public class EventDialog extends Dialog {
                     {
 
                     }
-                    Event e = new Event(eventName,eventLoc,inputDate,"","","", Calendar.getInstance().getTime(), false);
+                    Event e = new Event(eventName,eventLoc,inputDate,"","", Calendar.getInstance().getTime(), false);
                     /*
                     db.collection("Events").document("event").set(e).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
@@ -178,9 +178,7 @@ public class EventDialog extends Dialog {
                     MainActivity.events.add(e);
                     MainActivity.ids.add(doc.getId());
                     d.dismiss();
-
                 }
-
             }
         });
         d.show();

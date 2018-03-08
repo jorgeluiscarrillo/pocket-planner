@@ -12,19 +12,17 @@ public class Event {
     private String location;
     private Date date;
     private String description;
-    private String startTime;
     private String owner;
     private Date timeMade;
     private Boolean isPrivate;
 
     public Event() {}
 
-    public Event(String n, String l, Date d, String des, String st, String o, Date ct, Boolean p) {
+    public Event(String n, String l, Date d, String des, String o, Date ct, Boolean p) {
         name = n;
         location = l;
         date = d;
         description = des;
-        startTime = st;
         owner = o;
         timeMade = ct;
         isPrivate = p;
@@ -44,10 +42,6 @@ public class Event {
 
     public Date getDate() {
         return date;
-    }
-
-    public String getStartTime() {
-        return startTime;
     }
 
     public String getOwner() {
