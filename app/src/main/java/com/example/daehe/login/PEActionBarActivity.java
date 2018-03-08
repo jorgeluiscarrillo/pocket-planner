@@ -1,6 +1,8 @@
 package com.example.daehe.login;
 
 import android.app.FragmentManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
@@ -12,8 +14,12 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.facebook.login.Login;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+
+import java.net.URL;
 import java.util.ArrayList;
 
 public class PEActionBarActivity extends AppCompatActivity
@@ -54,19 +60,31 @@ public class PEActionBarActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         mToggle.syncState();
 
-        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
-        if (acct != null) {
-            String name = acct.getDisplayName();
-            String email = acct.getEmail();
-            Uri photo = acct.getPhotoUrl();
-            user = new User(name, email, photo, new ArrayList<Message>(), new ArrayList<Event>());
+        if(LoginActivity.mGoogleApiClient == null && LoginActivity.mGoogleApiClient.isConnected())
+        {
+            GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
+            if (acct != null) {
+                String name = acct.getDisplayName();
+                String email = acct.getEmail();
+                Uri photo = acct.getPhotoUrl();
+                user = new User(name, email, photo, new ArrayList<Message>(), new ArrayList<Event>());
+                View hView =  navigationView.getHeaderView(0);
+                if(user.getImage() != null)
+                    new DownloadImageTask((ImageView) hView.findViewById(R.id.nav_image_view)).execute(user.getImage().toString());
+                TextView navTxt = (TextView)hView.findViewById(R.id.nav_text_view);
+                navTxt.setText(user.getName());
+            }
+        }
+        if(LoginActivity.isLoggedInFB())
+        {
+            String name = LoginActivity.GetDisplayName();
+            View hView =  navigationView.getHeaderView(0);
+            new DownloadImageTask((ImageView) hView.findViewById(R.id.nav_image_view)).execute("https://graph.facebook.com/" + LoginActivity.GetFacebookID() + "/picture?type=large");
+            TextView navTxt = (TextView)hView.findViewById(R.id.nav_text_view);
+            navTxt.setText(name);
         }
 
-        View hView =  navigationView.getHeaderView(0);
-        if(user.getImage() != null)
-            new DownloadImageTask((ImageView) hView.findViewById(R.id.nav_image_view)).execute(user.getImage().toString());
-        TextView navTxt = (TextView)hView.findViewById(R.id.nav_text_view);
-        navTxt.setText(user.getName());
+
     }
 /*
     @Override
@@ -187,6 +205,21 @@ public class PEActionBarActivity extends AppCompatActivity
         {
             super.onBackPressed();
         }
+    }
+
+
+    private Bitmap getFacebookProfilePicture(String userID){
+        Bitmap bitmap = null;
+        try{
+            URL imageURL = new URL("https://graph.facebook.com/" + userID + "/picture?type=large");
+            bitmap = BitmapFactory.decodeStream(imageURL.openConnection().getInputStream());
+        }
+        catch(Exception e)
+        {
+
+        }
+
+        return bitmap;
     }
 
 

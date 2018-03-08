@@ -22,6 +22,7 @@ import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
@@ -39,13 +40,14 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.common.GoogleApiAvailability;
 
 import java.io.InputStream;
+import java.net.URL;
 
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
     private static final String TAG = "LoginActivity";
     private int RC_SIGN_IN = 0;
     private User user = null;
-    private GoogleApiClient mGoogleApiClient;
+    public static GoogleApiClient mGoogleApiClient;
     private SignInButton signInButton;
     private Button signOutButton;
     private Button proceedButton;
@@ -270,10 +272,20 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
      * Checks login status of facebook accounts
      * @return true if logged in false if null
      */
-    public boolean isLoggedInFB()
+    public static boolean isLoggedInFB()
     {
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         return accessToken != null;
+    }
+
+    public static String GetFacebookID()
+    {
+        return Profile.getCurrentProfile().getId();
+    }
+
+    public static String GetDisplayName()
+    {
+        return Profile.getCurrentProfile().getName();
     }
 
     protected void setGooglePlusButtonText(SignInButton signInButton, String buttonText) {
