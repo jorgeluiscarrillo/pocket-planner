@@ -89,9 +89,9 @@ public class PEActionBarActivity extends AppCompatActivity
                 if(!(mf != null && mf.isVisible()))
                 {
                     Toast.makeText(this, "Returning to home", Toast.LENGTH_SHORT).show();
-                    getSupportFragmentManager().beginTransaction( )
-                            .replace(R.id.contentframe, new MapFragment(), "MAP")
-                            .commit();
+                    for(int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); ++i) {
+                        getSupportFragmentManager().popBackStack();
+                    }
                 }
                 else
                 {
