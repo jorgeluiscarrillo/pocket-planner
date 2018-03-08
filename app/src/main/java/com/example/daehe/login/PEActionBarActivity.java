@@ -1,7 +1,11 @@
 package com.example.daehe.login;
 
 import android.app.FragmentManager;
+<<<<<<< HEAD
 import android.net.Uri;
+=======
+import android.content.res.Configuration;
+>>>>>>> master
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -9,21 +13,24 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
+<<<<<<< HEAD
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 
 import java.util.ArrayList;
 import java.util.List;
+=======
+
+import java.util.ArrayList;
+import java.util.Map;
+>>>>>>> master
 
 public class PEActionBarActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private ActionBarDrawerToggle mToggle;
     private DrawerLayout mDrawerLayout;
-    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -51,6 +58,7 @@ public class PEActionBarActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         mToggle.syncState();
+<<<<<<< HEAD
 
 
         GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
@@ -59,15 +67,32 @@ public class PEActionBarActivity extends AppCompatActivity
             String email = acct.getEmail();
             Uri photo = acct.getPhotoUrl();
             user = new User(name, email, photo, new ArrayList<Message>(), new ArrayList<Event>());
+=======
+    }
+/*
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+>>>>>>> master
         }
-
-        View hView =  navigationView.getHeaderView(0);
-        if(user.getImage() != null)
-            new DownloadImageTask((ImageView) hView.findViewById(R.id.nav_image_view)).execute(user.getImage().toString());
-        TextView navTxt = (TextView)hView.findViewById(R.id.nav_text_view);
-        navTxt.setText(user.getName());
     }
 
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState){
+        super.onPostCreate(savedInstanceState);
+        mToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig){
+        super.onConfigurationChanged(newConfig);
+        mToggle.onConfigurationChanged(newConfig);
+    }
+*/
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(mToggle.onOptionsItemSelected(item))

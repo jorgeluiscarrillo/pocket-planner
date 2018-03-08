@@ -52,8 +52,6 @@ public class MainActivity extends PEActionBarActivity {
             retrieved = true;
         }
 
-
-
         getSupportFragmentManager().beginTransaction( )
                 .replace(R.id.contentframe, new MapFragment(), "MAP")
                 .commit();
