@@ -1,11 +1,7 @@
 package com.example.daehe.login;
 
 import android.app.FragmentManager;
-<<<<<<< HEAD
 import android.net.Uri;
-=======
-import android.content.res.Configuration;
->>>>>>> master
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -14,23 +10,20 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
-<<<<<<< HEAD
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-
 import java.util.ArrayList;
-import java.util.List;
-=======
-
-import java.util.ArrayList;
-import java.util.Map;
->>>>>>> master
 
 public class PEActionBarActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private ActionBarDrawerToggle mToggle;
     private DrawerLayout mDrawerLayout;
+    private User user;
+
+    public User getUser(){
+        return user;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -58,8 +51,6 @@ public class PEActionBarActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         mToggle.syncState();
-<<<<<<< HEAD
-
 
         GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
         if (acct != null) {
@@ -67,7 +58,7 @@ public class PEActionBarActivity extends AppCompatActivity
             String email = acct.getEmail();
             Uri photo = acct.getPhotoUrl();
             user = new User(name, email, photo, new ArrayList<Message>(), new ArrayList<Event>());
-=======
+        }
     }
 /*
     @Override

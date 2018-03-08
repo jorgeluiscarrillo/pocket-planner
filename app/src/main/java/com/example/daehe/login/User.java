@@ -25,7 +25,7 @@ public class User {
         mEvents = new ArrayList<Event>();
     }
 
-    public User(String name, String email, String id, Uri image, ArrayList<Message> msgs, ArrayList<Event> events){
+    public User(String name, String email, Uri image, ArrayList<Message> msgs, ArrayList<Event> events){
         mName = name;
         mEmail = email;
         mImage = image;

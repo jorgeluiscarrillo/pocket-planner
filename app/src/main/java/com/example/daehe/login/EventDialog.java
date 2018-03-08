@@ -186,11 +186,7 @@ public class EventDialog extends Dialog {
         d.show();
 
         Window window = d.getWindow();
-<<<<<<< HEAD
-        //window.setLayout(1000,1000);
-=======
         window.setLayout(WindowManager.LayoutParams.MATCH_PARENT,WindowManager.LayoutParams.MATCH_PARENT);
->>>>>>> master
     }
 
     private void updateLabel(){
