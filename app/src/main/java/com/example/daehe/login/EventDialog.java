@@ -171,7 +171,7 @@ public class EventDialog extends Dialog {
         d.show();
 
         Window window = d.getWindow();
-        window.setLayout(1000,1000);
+        //window.setLayout(1000,1000);
     }
 
     private void updateLabel(){

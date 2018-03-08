@@ -1,34 +1,22 @@
 package com.example.daehe.login;
 
-import android.app.Fragment;
 import android.app.FragmentManager;
-import android.content.res.Configuration;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-<<<<<<< HEAD
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 
-import java.io.InputStream;
-=======
 import java.util.ArrayList;
->>>>>>> origin/BryanD
-import java.util.Map;
+import java.util.List;
 
 public class PEActionBarActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -69,9 +57,8 @@ public class PEActionBarActivity extends AppCompatActivity
         if (acct != null) {
             String name = acct.getDisplayName();
             String email = acct.getEmail();
-            String id = acct.getId();
             Uri photo = acct.getPhotoUrl();
-            user = new User(name, email, id, photo);
+            user = new User(name, email, photo, new ArrayList<Message>(), new ArrayList<Event>());
         }
 
         View hView =  navigationView.getHeaderView(0);
