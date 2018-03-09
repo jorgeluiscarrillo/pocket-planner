@@ -60,7 +60,7 @@ public class PEActionBarActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         mToggle.syncState();
 
-        if(LoginActivity.mGoogleApiClient == null && LoginActivity.mGoogleApiClient.isConnected())
+        if(LoginActivity.mGoogleApiClient != null && LoginActivity.mGoogleApiClient.isConnected())
         {
             GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
             if (acct != null) {
@@ -71,7 +71,7 @@ public class PEActionBarActivity extends AppCompatActivity
                 View hView =  navigationView.getHeaderView(0);
                 if(user.getImage() != null)
                     new DownloadImageTask((ImageView) hView.findViewById(R.id.nav_image_view)).execute(user.getImage().toString());
-                TextView navTxt = (TextView)hView.findViewById(R.id.nav_text_view);
+                TextView navTxt = (TextView) hView.findViewById(R.id.nav_text_view);
                 navTxt.setText(user.getName());
             }
         }
@@ -80,7 +80,7 @@ public class PEActionBarActivity extends AppCompatActivity
             String name = LoginActivity.GetDisplayName();
             View hView =  navigationView.getHeaderView(0);
             new DownloadImageTask((ImageView) hView.findViewById(R.id.nav_image_view)).execute("https://graph.facebook.com/" + LoginActivity.GetFacebookID() + "/picture?type=large");
-            TextView navTxt = (TextView)hView.findViewById(R.id.nav_text_view);
+            TextView navTxt = (TextView) hView.findViewById(R.id.nav_text_view);
             navTxt.setText(name);
         }
 
