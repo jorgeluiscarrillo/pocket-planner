@@ -55,6 +55,7 @@ public class MessageFragment extends Fragment {
                 rmf.setReadOnly(true);
                 getActivity().getSupportFragmentManager().beginTransaction( )
                         .replace(R.id.contentframe, rmf)
+                        .addToBackStack(null)
                         .commit();
             }
         });
@@ -68,6 +69,7 @@ public class MessageFragment extends Fragment {
                 ReadMessageFragment rmf = new ReadMessageFragment();
                 getActivity().getSupportFragmentManager().beginTransaction( )
                         .replace(R.id.contentframe, rmf, "Read Message")
+                        .addToBackStack(null)
                         .commit();
             }
         });

@@ -139,15 +139,18 @@ public class PEActionBarActivity extends AppCompatActivity
                 break;
             case R.id.nav_createEvent:
                 EventFragment ef = (EventFragment) getSupportFragmentManager().findFragmentByTag("CreateEvent");
-                if(!(ef !=null && ef.isVisible()))
+                if(!(mf != null && mf.isVisible()))
                 {
-                    Toast.makeText(this, "Creating an event", Toast.LENGTH_SHORT).show();
-                    EventDialog ed = new EventDialog(this);
-                    ed.ShowDialog();
+                    getSupportFragmentManager().beginTransaction( )
+                            .replace(R.id.contentframe, new EventFragment(), "Event")
+                            .commit();
                 }
                 else
                 {
-                    Toast.makeText(this, "Already creating an event", Toast.LENGTH_SHORT).show();
+                    getSupportFragmentManager().beginTransaction( )
+                            .replace(R.id.contentframe, new EventFragment(), "Event")
+                            .addToBackStack(null)
+                            .commit();
                 }
 
                 break;

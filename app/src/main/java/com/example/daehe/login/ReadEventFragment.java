@@ -69,8 +69,10 @@ public class ReadEventFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 FragmentManager fm = getFragmentManager();
-                UpdateEventDialog upd = new UpdateEventDialog(getActivity(), event, fm);
-                upd.ShowDialog();
+                fm.beginTransaction()
+                        .replace(R.id.contentframe, new UpdateFragment(), "Update")
+                        .addToBackStack(null)
+                        .commit();
             }
         });
 
@@ -131,4 +133,5 @@ public class ReadEventFragment extends Fragment {
     {
         event = ev;
     }
+    public Event getEvent() { return event; }
 }
