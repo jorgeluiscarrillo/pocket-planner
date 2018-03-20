@@ -34,6 +34,7 @@ public class MessageFragment extends Fragment {
     private void loadInbox(){
         ListView lvInbox = (ListView) myView.findViewById(R.id.lvInbox);
         msgs = new ArrayList<Message>();
+        /*
         msgs.add(
                 new Message(
                         "Test",
@@ -42,7 +43,7 @@ public class MessageFragment extends Fragment {
                         "Test"
                 )
         );
-
+*/
         MessageAdapter adapter = new MessageAdapter(getActivity(), msgs);
 
         lvInbox.setAdapter(adapter);

@@ -2,11 +2,13 @@ package com.example.daehe.login;
 
 import android.app.FragmentManager;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -14,14 +16,38 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import org.w3c.dom.Document;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+
+import static android.content.ContentValues.TAG;
 
 public class PEActionBarActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private static final String TAG = "PEActionBarActivity";
     private ActionBarDrawerToggle mToggle;
     private DrawerLayout mDrawerLayout;
     private User user;
+    private List<User> u;
+    private FirebaseFirestore db;
 
     public User getUser(){
         return user;
@@ -29,7 +55,9 @@ public class PEActionBarActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
+
         super.onCreate(savedInstanceState);
+        db = FirebaseFirestore.getInstance();
     }
 
     protected void setMenuBar(int layout){
@@ -56,42 +84,37 @@ public class PEActionBarActivity extends AppCompatActivity
 
         GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
         if (acct != null) {
+            String id = acct.getId();
             String name = acct.getDisplayName();
             String email = acct.getEmail();
-            Uri photo = acct.getPhotoUrl();
-            user = new User(name, email, photo, new ArrayList<Message>(), new ArrayList<Event>());
-        }
+            String photo = acct.getPhotoUrl().toString();
+            user = new User(id, name, email, photo, new ArrayList<Message>(), new ArrayList<Event>());
+            /*if (true) {
+                DocumentReference doc = db.collection("Users").document();
 
+                db.collection("Users")
+                        .document(user.getID())
+                        .set(user);
+
+            }*/
+
+            db.collection("Users").addSnapshotListener(new EventListener<QuerySnapshot>() {
+                @Override
+                public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
+                    for(DocumentSnapshot ds : documentSnapshots){
+                        Log.d(TAG, "On event: " + ds.getString("name"));
+                    }
+                }
+            });
+        }
         View hView =  navigationView.getHeaderView(0);
         if(user.getImage() != null)
             new DownloadImageTask((ImageView) hView.findViewById(R.id.nav_image_view)).execute(user.getImage().toString());
         TextView navTxt = (TextView)hView.findViewById(R.id.nav_text_view);
         navTxt.setText(user.getName());
-    }
-/*
-    @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
->>>>>>> master
-        }
+        Toast.makeText(this, u.get(0).getID(), Toast.LENGTH_SHORT).show();
     }
 
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState){
-        super.onPostCreate(savedInstanceState);
-        mToggle.syncState();
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig){
-        super.onConfigurationChanged(newConfig);
-        mToggle.onConfigurationChanged(newConfig);
-    }
-*/
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(mToggle.onOptionsItemSelected(item))

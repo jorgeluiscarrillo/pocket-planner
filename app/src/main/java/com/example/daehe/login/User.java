@@ -10,37 +10,34 @@ import java.util.List;
  */
 
 public class User {
-    private String mName;
-    private String mEmail;
-    private Uri mImage;
-    private ArrayList<Message> mMsgs;
-    private ArrayList<Event> mEvents;
+    private String id;
+    private String name;
+    private String email;
+    private String image;
+    private ArrayList<Message> messages;
+    private ArrayList<Event> events;
 
 
-    public User(){
-        mName = "";
-        mEmail = "";
-        mImage = null;
-        mMsgs = new ArrayList<Message>();
-        mEvents = new ArrayList<Event>();
+    public User(){}
+
+    public User(String id, String name, String email, String image, ArrayList<Message> msgs, ArrayList<Event> events){
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.image = image;
+        messages = msgs;
+        events = events;
     }
 
-    public User(String name, String email, Uri image, ArrayList<Message> msgs, ArrayList<Event> events){
-        mName = name;
-        mEmail = email;
-        mImage = image;
-        mMsgs = msgs;
-        mEvents = events;
-    }
-
-    public String getName() {return mName;}
-    public String getEmail() {return mEmail;}
-    public Uri getImage() {return mImage;}
-    public ArrayList<Message> getMessages() {return mMsgs;}
-    public ArrayList<Event> getEvents() {return mEvents;}
+    public String getID() {return this.id;}
+    public String getName() {return this.name;}
+    public String getEmail() {return this.email;}
+    public String getImage() {return this.image;}
+    public ArrayList<Message> getMessages() {return messages;}
+    public ArrayList<Event> getEvents() {return events;}
 
     @Override
     public String toString(){
-        return mName + " (" + mEmail + ")";
+        return name + " (" + email + ")";
     }
 }
