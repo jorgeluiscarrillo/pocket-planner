@@ -28,6 +28,7 @@ import java.text.SimpleDateFormat;
 
 public class ReadEventFragment extends Fragment {
     View myView;
+    PEActionBarActivity activity;
     Event event;
     TextView eventName;
     TextView eventOwner;
@@ -43,7 +44,7 @@ public class ReadEventFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState)
     {
         myView = inflater.inflate(R.layout.fragment_read_event, container,false);
-
+        activity = (PEActionBarActivity) getActivity();
         eventName = (TextView) myView.findViewById(R.id.re_eventName);
         eventOwner = (TextView) myView.findViewById(R.id.re_eventOwner);
         eventLoc = (TextView) myView.findViewById(R.id.re_eventLoc);
@@ -89,12 +90,12 @@ public class ReadEventFragment extends Fragment {
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                int pos = MainActivity.events.indexOf(event);
+                                int pos = activity.GetEvents().indexOf(event);
 
                                 db.collection("Events")
                                         .document("user")
                                         .collection("Events")
-                                        .document(MainActivity.ids.get(pos))
+                                        .document(activity.GetEventIds().get(pos))
                                         .delete()
                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
@@ -108,8 +109,8 @@ public class ReadEventFragment extends Fragment {
                                                 //Toast.makeText(getContext(),"Event could not be deleted", Toast.LENGTH_SHORT).show();
                                             }
                                         });
-                                MainActivity.events.remove(pos);
-                                MainActivity.ids.remove(pos);
+                                activity.GetEvents().remove(pos);
+                                activity.GetEventIds().remove(pos);
 
                                 FragmentManager fm = getFragmentManager();
                                 fm.popBackStack();

@@ -20,6 +20,9 @@ import android.widget.TimePicker;
 import com.example.daehe.login.Event;
 import com.example.daehe.login.MainActivity;
 import com.example.daehe.login.R;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.ParseException;
@@ -50,6 +53,7 @@ public class UpdateFragment extends Fragment {
     private Button confirm;
     private Event updatedEvent;
     private FragmentManager fragMan;
+    private PEActionBarActivity activity;
 
     @Nullable
     @Override
@@ -62,6 +66,7 @@ public class UpdateFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        activity = (PEActionBarActivity) getActivity();
         db = FirebaseFirestore.getInstance();
         fragMan = getFragmentManager();
         updatedEvent = ((ReadEventFragment) fragMan.findFragmentByTag("Read Event")).getEvent();
@@ -163,16 +168,27 @@ public class UpdateFragment extends Fragment {
                     updatedEvent.setLocation(eventLoc);
                     updatedEvent.setDate(inputDate);
 
-                    int pos = MainActivity.events.indexOf(updatedEvent);
+                    int pos = activity.GetEvents().indexOf(updatedEvent);
 
-                    db.collection("Events")
-                            .document("user")
-                            .collection("Events")
-                            .document(MainActivity.ids.get(pos))
-                            .set(updatedEvent);
+                    if(LoginActivity.mGoogleApiClient != null)
+                    {
+                        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(getContext());
+                        db.collection("Events")
+                                .document(acct.getId())
+                                .collection("Events")
+                                .document(activity.GetEventIds().get(pos))
+                                .set(updatedEvent);
+                    }
+
+                    if(LoginActivity.isLoggedInFB())
+                    {
+                        db.collection("Events")
+                                .document(LoginActivity.GetFacebookID())
+                                .collection("Events")
+                                .document(activity.GetEventIds().get(pos))
+                                .set(updatedEvent);
+                    }
                 }
-
-
                 fragMan.popBackStack();
             }
         });
