@@ -4,36 +4,41 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
-import com.example.daehe.login.Event;
-import com.example.daehe.login.MainActivity;
-import com.example.daehe.login.R;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 /**
- * Created by Bryan on 3/20/2018.
+ * Created by Bryan on 2/28/2018.
  */
 
-public class UpdateFragment extends Fragment {
-    View myView;
+public class EventDialog extends Dialog {
     private String eventName;
     private String eventLoc;
     private String eventDate;
@@ -41,48 +46,31 @@ public class UpdateFragment extends Fragment {
     private Activity c;
     private Dialog d;
     private FirebaseFirestore db;
-    private TextView title;
     private EditText date;
     private Calendar myCalendar = Calendar.getInstance();
     private EditText name;
     private EditText location;
     private EditText startTime;
     private Button confirm;
-    private Event updatedEvent;
-    private FragmentManager fragMan;
 
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        myView=inflater.inflate(R.layout.fragment_create_event,container,false);
-        return myView;
+    public EventDialog(Activity a)
+    {
+        super(a);
+        this.c = a;
+        db = FirebaseFirestore.getInstance();
     }
 
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void ShowDialog()
+    {
+        d = new Dialog(c);
+        d.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        d.setContentView(R.layout.fragment_create_event);
 
-        db = FirebaseFirestore.getInstance();
-        fragMan = getFragmentManager();
-        updatedEvent = ((ReadEventFragment) fragMan.findFragmentByTag("Read Event")).getEvent();
-        title = (TextView) view.findViewById(R.id.dialog_title);
-        name=(EditText) view.findViewById(R.id.input_name);
-        location=(EditText) view.findViewById(R.id.input_location);
-        date =(EditText) view.findViewById(R.id.input_date);
-        startTime = (EditText) view.findViewById(R.id.input_sTime);
-        confirm=(Button) view.findViewById(R.id.event_button);
-
-        String dateFormat = "MM/dd/yy";
-        String timeFormat = "hh:mm aa";
-        Date eDate = updatedEvent.getDate();
-        SimpleDateFormat sdf = new SimpleDateFormat(dateFormat, Locale.US);
-        SimpleDateFormat sdfTime = new SimpleDateFormat(timeFormat, Locale.US);
-
-        title.setText("Update Event");
-        name.setText(updatedEvent.getName());
-        location.setText(updatedEvent.getLocation());
-        date.setText(sdf.format(eDate));
-        startTime.setText(sdfTime.format(eDate));
+        name=(EditText) d.findViewById(R.id.input_name);
+        location=(EditText) d.findViewById(R.id.input_location);
+        date =(EditText) d.findViewById(R.id.input_date);
+        startTime = (EditText) d.findViewById(R.id.input_sTime);
+        confirm=(Button) d.findViewById(R.id.event_button);
 
         final DatePickerDialog.OnDateSetListener datePick = new DatePickerDialog.OnDateSetListener() {
             @Override
@@ -105,7 +93,6 @@ public class UpdateFragment extends Fragment {
         };
 
         date.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
@@ -116,11 +103,11 @@ public class UpdateFragment extends Fragment {
         });
 
         startTime.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                new TimePickerDialog(c, timePick, myCalendar
-                        .get(Calendar.HOUR_OF_DAY), myCalendar.get(Calendar.MINUTE), false).show();
-            }
+             @Override
+             public void onClick(View view) {
+                 new TimePickerDialog(c, timePick, myCalendar
+                         .get(Calendar.HOUR_OF_DAY), myCalendar.get(Calendar.MINUTE), false).show();
+             }
         });
 
         confirm.setOnClickListener(new View.OnClickListener() {
@@ -130,6 +117,7 @@ public class UpdateFragment extends Fragment {
                 eventLoc = location.getText().toString();
                 eventDate = date.getText().toString();
                 eventTime = startTime.getText().toString();
+
                 if(isEmpty(name))
                 {
                     name.setError("Name cannot be empty");
@@ -146,6 +134,7 @@ public class UpdateFragment extends Fragment {
                 {
                     startTime.setError("Start time cannot be empty");
                 }
+
                 if(!isEmpty(name)&&!isEmpty(location)&&!isEmpty(date)&&!isEmpty(startTime))
                 {
                     String myFormat = "MM/dd/yy hh:mm aa";
@@ -159,23 +148,43 @@ public class UpdateFragment extends Fragment {
                     {
 
                     }
-                    updatedEvent.setName(eventName);
-                    updatedEvent.setLocation(eventLoc);
-                    updatedEvent.setDate(inputDate);
+                    Event e = new Event(eventName,eventLoc,inputDate,"","", Calendar.getInstance().getTime(), false);
+                    /*
+                    db.collection("Events").document("event").set(e).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Toast.makeText(c, "Event successfully created!", Toast.LENGTH_SHORT).show();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(c, "ERROR" +e.toString(),
+                                            Toast.LENGTH_SHORT).show();
+                            Log.d("TAG", e.toString());
+                        }
+                    });*/
 
-                    int pos = MainActivity.events.indexOf(updatedEvent);
+                    DocumentReference doc = db.collection("Events")
+                            .document("user")
+                            .collection("Events")
+                            .document();
 
                     db.collection("Events")
                             .document("user")
                             .collection("Events")
-                            .document(MainActivity.ids.get(pos))
-                            .set(updatedEvent);
+                            .document(doc.getId())
+                            .set(e);
+
+                    MainActivity.events.add(e);
+                    MainActivity.ids.add(doc.getId());
+                    d.dismiss();
                 }
-
-
-                fragMan.popBackStack();
             }
         });
+        d.show();
+
+        Window window = d.getWindow();
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT,WindowManager.LayoutParams.MATCH_PARENT);
     }
 
     private void updateLabel(){
@@ -193,4 +202,5 @@ public class UpdateFragment extends Fragment {
     private boolean isEmpty(EditText etText) {
         return etText.getText().toString().trim().length() == 0;
     }
+
 }

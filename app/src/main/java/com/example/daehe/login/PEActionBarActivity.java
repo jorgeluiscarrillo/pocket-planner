@@ -4,13 +4,11 @@ import android.app.FragmentManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -20,17 +18,9 @@ import android.widget.Toast;
 import com.facebook.login.Login;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
-
-import static android.content.ContentValues.TAG;
 
 public class PEActionBarActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -38,9 +28,6 @@ public class PEActionBarActivity extends AppCompatActivity
     private ActionBarDrawerToggle mToggle;
     private DrawerLayout mDrawerLayout;
     private User user;
-    private ArrayList<Event> events = new ArrayList<Event>();
-    private ArrayList<String> ids = new ArrayList<String>();
-    FirebaseFirestore db;
 
     public User getUser(){
         return user;
@@ -53,8 +40,6 @@ public class PEActionBarActivity extends AppCompatActivity
 
     protected void setMenuBar(int layout){
         setContentView(layout);
-        db = FirebaseFirestore.getInstance();
-        getEventsFromDB();
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -74,7 +59,7 @@ public class PEActionBarActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         mToggle.syncState();
-        ;
+
         if(LoginActivity.mGoogleApiClient != null && LoginActivity.mGoogleApiClient.isConnected())
         {
             GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
@@ -225,72 +210,20 @@ public class PEActionBarActivity extends AppCompatActivity
         }
     }
 
-    private void getEventsFromDB()
-    {
-        db.collection("Events")
-                .document("user")
-                .collection("Events")
-                .get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot documentSnapshots) {
-                        if(documentSnapshots.isEmpty())
-                        {
-                            Log.d(TAG,"onSuccess: LIST EMPTY");
-                        }
-                        else
-                        {
-                            for(DocumentSnapshot document : documentSnapshots.getDocuments())
-                            {
-                                ids.add(document.getId());
-                            }
-                            //Toast.makeText(getApplicationContext(),"ID: " + ids.get(0), Toast.LENGTH_SHORT).show();
-                            // Convert the whole Query Snapshot to a list
-                            // of objects directly! No need to fetch each
-                            // document.
-                            List<Event> types = documentSnapshots.toObjects(Event.class);
-                            // Add all to your list
-                            events.addAll(types);
 
-                            Log.d(TAG, "onSuccess: " + events);
-                        }
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
+    private Bitmap getFacebookProfilePicture(String userID){
+        Bitmap bitmap = null;
+        try{
+            URL imageURL = new URL("https://graph.facebook.com/" + userID + "/picture?type=large");
+            bitmap = BitmapFactory.decodeStream(imageURL.openConnection().getInputStream());
+        }
+        catch(Exception e)
+        {
 
-                    }
-                });
+        }
+
+        return bitmap;
     }
 
-    public void AddEvents(Event e)
-    {
-        events.add(e);
-    }
 
-    public void RemoveEvents(Event e)
-    {
-        events.remove(e);
-    }
-
-    public ArrayList<Event> GetEvents()
-    {
-        return events;
-    }
-
-    public Event getEventFromList(int i)
-    {
-        return events.get(i);
-    }
-
-    public ArrayList<String> GetEventIds()
-    {
-        return ids;
-    }
-
-    public void AddId(String s)
-    {
-        ids.add(s);
-    }
 }

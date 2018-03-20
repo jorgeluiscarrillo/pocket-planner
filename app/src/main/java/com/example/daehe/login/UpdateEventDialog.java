@@ -3,25 +3,20 @@ package com.example.daehe.login;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.FragmentTransaction;
 import android.app.TimePickerDialog;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
-
-import com.example.daehe.login.Event;
-import com.example.daehe.login.MainActivity;
-import com.example.daehe.login.R;
+import android.widget.Toast;
 import com.google.firebase.firestore.FirebaseFirestore;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -29,11 +24,10 @@ import java.util.Date;
 import java.util.Locale;
 
 /**
- * Created by Bryan on 3/20/2018.
+ * Created by Bryan on 3/6/2018.
  */
 
-public class UpdateFragment extends Fragment {
-    View myView;
+public class UpdateEventDialog extends Dialog {
     private String eventName;
     private String eventLoc;
     private String eventDate;
@@ -51,26 +45,27 @@ public class UpdateFragment extends Fragment {
     private Event updatedEvent;
     private FragmentManager fragMan;
 
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        myView=inflater.inflate(R.layout.fragment_create_event,container,false);
-        return myView;
+    public UpdateEventDialog(Activity a, Event e,FragmentManager fm)
+    {
+        super(a);
+        this.c = a;
+        updatedEvent = e;
+        db = FirebaseFirestore.getInstance();
+        fragMan = fm;
     }
 
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void ShowDialog()
+    {
+        d = new Dialog(c);
+        d.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        d.setContentView(R.layout.fragment_create_event);
 
-        db = FirebaseFirestore.getInstance();
-        fragMan = getFragmentManager();
-        updatedEvent = ((ReadEventFragment) fragMan.findFragmentByTag("Read Event")).getEvent();
-        title = (TextView) view.findViewById(R.id.dialog_title);
-        name=(EditText) view.findViewById(R.id.input_name);
-        location=(EditText) view.findViewById(R.id.input_location);
-        date =(EditText) view.findViewById(R.id.input_date);
-        startTime = (EditText) view.findViewById(R.id.input_sTime);
-        confirm=(Button) view.findViewById(R.id.event_button);
+        title = (TextView) d.findViewById(R.id.dialog_title);
+        name=(EditText) d.findViewById(R.id.input_name);
+        location=(EditText) d.findViewById(R.id.input_location);
+        date =(EditText) d.findViewById(R.id.input_date);
+        startTime = (EditText) d.findViewById(R.id.input_sTime);
+        confirm=(Button) d.findViewById(R.id.event_button);
 
         String dateFormat = "MM/dd/yy";
         String timeFormat = "hh:mm aa";
@@ -170,12 +165,23 @@ public class UpdateFragment extends Fragment {
                             .collection("Events")
                             .document(MainActivity.ids.get(pos))
                             .set(updatedEvent);
+                    d.dismiss();
                 }
 
 
                 fragMan.popBackStack();
+
+                Fragment view = null;
+                view = fragMan.findFragmentByTag("View Event");
+                final android.support.v4.app.FragmentTransaction ft = fragMan.beginTransaction();
+                ft.detach(view);
+                ft.attach(view);
+                ft.commit();
             }
         });
+        d.show();
+        Window window = d.getWindow();
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT,WindowManager.LayoutParams.MATCH_PARENT);
     }
 
     private void updateLabel(){
