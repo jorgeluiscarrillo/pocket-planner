@@ -11,24 +11,16 @@ import java.util.Date;
 
 public class Message {
     private String mTitle;
-    private User mSender;
-    private User mReceiver;
+    private String mSender;
+    private String mReceiver;
     private Date mDateAndTime;
     private String mContent;
     private boolean mMarkAsImportant;
     private boolean mRead;
 
-    public Message(){
-        mTitle = "";
-        mSender = new User();
-        mReceiver = new User();
-        mDateAndTime = new Date();
-        mContent = "";
-        mMarkAsImportant = false;
-        mRead = false;
-    }
+    public Message(){}
 
-    public Message(String title, User sender, User receiver, String content){
+    public Message(String title, String sender, String receiver, String content){
         mTitle = title;
         mSender = sender;
         mReceiver = receiver;
@@ -39,16 +31,16 @@ public class Message {
     }
 
     public String getTitle() {return mTitle;}
-    public User getSender() {return mSender;}
-    public User getReceiver() {return mReceiver;}
+    public String getSender() {return mSender;}
+    public String getReceiver() {return mReceiver;}
     public Date getDateAndTime() {return mDateAndTime;}
     public String getContent() {return mContent;}
     public boolean isImportant() {return mMarkAsImportant;}
     public boolean isRead() {return mRead;}
 
     public void setTitle(String title) {mTitle = title;}
-    public void setSender(User sender) {mSender = sender;}
-    public void setReceiver(User receiver) {mReceiver = receiver;}
+    public void setSender(String sender) {mSender = sender;}
+    public void setReceiver(String receiver) {mReceiver = receiver;}
     public void setDateAndTime(Date dateAndTime) {mDateAndTime = dateAndTime;}
     public void setContent(String content) {mContent = content;}
     public void setImportant(boolean important) {mMarkAsImportant = important;}

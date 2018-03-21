@@ -46,7 +46,6 @@ public class PEActionBarActivity extends AppCompatActivity
     private ActionBarDrawerToggle mToggle;
     private DrawerLayout mDrawerLayout;
     private User user;
-    private List<User> u;
     private FirebaseFirestore db;
 
     public User getUser(){
@@ -89,30 +88,18 @@ public class PEActionBarActivity extends AppCompatActivity
             String email = acct.getEmail();
             String photo = acct.getPhotoUrl().toString();
             user = new User(id, name, email, photo, new ArrayList<Message>(), new ArrayList<Event>());
-            /*if (true) {
-                DocumentReference doc = db.collection("Users").document();
 
-                db.collection("Users")
-                        .document(user.getID())
-                        .set(user);
+            DocumentReference doc = db.collection("Users").document();
 
-            }*/
-
-            db.collection("Users").addSnapshotListener(new EventListener<QuerySnapshot>() {
-                @Override
-                public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
-                    for(DocumentSnapshot ds : documentSnapshots){
-                        Log.d(TAG, "On event: " + ds.getString("name"));
-                    }
-                }
-            });
+            db.collection("Users")
+                    .document(user.getID())
+                    .set(user);
         }
         View hView =  navigationView.getHeaderView(0);
         if(user.getImage() != null)
             new DownloadImageTask((ImageView) hView.findViewById(R.id.nav_image_view)).execute(user.getImage().toString());
         TextView navTxt = (TextView)hView.findViewById(R.id.nav_text_view);
         navTxt.setText(user.getName());
-        Toast.makeText(this, u.get(0).getID(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
