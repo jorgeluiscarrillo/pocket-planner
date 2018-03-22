@@ -34,6 +34,14 @@ public class MessageFragment extends Fragment {
     private void loadInbox(){
         ListView lvInbox = (ListView) myView.findViewById(R.id.lvInbox);
         msgs = new ArrayList<Message>();
+        msgs.add(
+                new Message(
+                        "Test",
+                        new User("Daehee", "email@email.com", null, null, null),
+                        new User(),
+                        "Test"
+                )
+        );
 
         MessageAdapter adapter = new MessageAdapter(getActivity(), msgs);
 

@@ -10,58 +10,37 @@ import java.util.List;
  */
 
 public class User {
-    private String id;
-    private String name;
-    private String email;
-    private String image;
-    private ArrayList<Message> messages;
-    private ArrayList<Event> events;
+    private String mName;
+    private String mEmail;
+    private Uri mImage;
+    private ArrayList<Message> mMsgs;
+    private ArrayList<Event> mEvents;
 
 
-    public User(){}
-
-    public User(String id, String name, String email, String image, ArrayList<Message> msgs, ArrayList<Event> events){
-        this.id = id;
-        this.name = name;
-        this.email = email;
-        this.image = image;
-        messages = msgs;
-        events = events;
+    public User(){
+        mName = "";
+        mEmail = "";
+        mImage = null;
+        mMsgs = new ArrayList<Message>();
+        mEvents = new ArrayList<Event>();
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public User(String name, String email, Uri image, ArrayList<Message> msgs, ArrayList<Event> events){
+        mName = name;
+        mEmail = email;
+        mImage = image;
+        mMsgs = msgs;
+        mEvents = events;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
-    }
-
-    public void setMessages(ArrayList<Message> messages) {
-        this.messages = messages;
-    }
-
-    public void setEvents(ArrayList<Event> events) {
-        this.events = events;
-    }
-
-    public String getID() {return this.id;}
-    public String getName() {return this.name;}
-    public String getEmail() {return this.email;}
-    public String getImage() {return this.image;}
-    public ArrayList<Message> getMessages() {return messages;}
-    public ArrayList<Event> getEvents() {return events;}
+    public String getName() {return mName;}
+    public String getEmail() {return mEmail;}
+    public Uri getImage() {return mImage;}
+    public ArrayList<Message> getMessages() {return mMsgs;}
+    public ArrayList<Event> getEvents() {return mEvents;}
 
     @Override
     public String toString(){
-        return name + " (" + email + ")";
+        return mName + " (" + mEmail + ")";
     }
 }

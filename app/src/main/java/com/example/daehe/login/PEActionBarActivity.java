@@ -20,7 +20,6 @@ import android.widget.Toast;
 import com.facebook.login.Login;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-<<<<<<< HEAD
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -30,45 +29,18 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-=======
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QuerySnapshot;
-
-import org.w3c.dom.Document;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
->>>>>>> Daehee
 
 import static android.content.ContentValues.TAG;
 
 public class PEActionBarActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private static final String TAG = "PEActionBarActivity";
     private ActionBarDrawerToggle mToggle;
     private DrawerLayout mDrawerLayout;
     private User user;
-<<<<<<< HEAD
     private ArrayList<Event> events = new ArrayList<Event>();
     private ArrayList<String> ids = new ArrayList<String>();
     FirebaseFirestore db;
-=======
-    private FirebaseFirestore db;
->>>>>>> Daehee
 
     public User getUser(){
         return user;
@@ -76,9 +48,7 @@ public class PEActionBarActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
-
         super.onCreate(savedInstanceState);
-        db = FirebaseFirestore.getInstance();
     }
 
     protected void setMenuBar(int layout){
@@ -104,7 +74,6 @@ public class PEActionBarActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         mToggle.syncState();
-<<<<<<< HEAD
         ;
         if(LoginActivity.mGoogleApiClient != null && LoginActivity.mGoogleApiClient.isConnected())
         {
@@ -131,30 +100,31 @@ public class PEActionBarActivity extends AppCompatActivity
         }
 
 
-=======
-
-        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
-        if (acct != null) {
-            String id = acct.getId();
-            String name = acct.getDisplayName();
-            String email = acct.getEmail();
-            String photo = acct.getPhotoUrl().toString();
-            user = new User(id, name, email, photo, new ArrayList<Message>(), new ArrayList<Event>());
-
-            DocumentReference doc = db.collection("Users").document();
-
-            db.collection("Users")
-                    .document(user.getID())
-                    .set(user);
+    }
+/*
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+>>>>>>> master
         }
-        View hView =  navigationView.getHeaderView(0);
-        if(user.getImage() != null)
-            new DownloadImageTask((ImageView) hView.findViewById(R.id.nav_image_view)).execute(user.getImage().toString());
-        TextView navTxt = (TextView)hView.findViewById(R.id.nav_text_view);
-        navTxt.setText(user.getName());
->>>>>>> Daehee
     }
 
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState){
+        super.onPostCreate(savedInstanceState);
+        mToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig){
+        super.onConfigurationChanged(newConfig);
+        mToggle.onConfigurationChanged(newConfig);
+    }
+*/
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(mToggle.onOptionsItemSelected(item))
