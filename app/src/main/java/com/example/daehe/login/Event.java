@@ -63,4 +63,12 @@ public class Event {
     public void setLocation(String location) {
         this.location = location;
     }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setPrivate(Boolean aPrivate) {
+        isPrivate = aPrivate;
+    }
 }
