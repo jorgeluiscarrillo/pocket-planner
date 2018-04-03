@@ -11,11 +11,17 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 
 public class ReadMessageFragment extends Fragment {
@@ -69,13 +75,29 @@ public class ReadMessageFragment extends Fragment {
                 String title = etTitle.getText().toString();
                 String body = etBody.getText().toString();
 
-                Message msg = new Message(title, sender, receiver, body);
+                mMsg = new Message(title, sender, receiver, body);
 
-                DocumentReference doc = db.collection("Messages").document();
+                CollectionReference cr = db.collection("Users");
 
-                db.collection("Messages")
-                        .document(doc.getId())
-                        .set(msg);
+                cr.whereEqualTo("email", receiver).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot documentSnapshots) {
+                        List<User> us = documentSnapshots.toObjects(User.class);
+
+                        Toast.makeText(getActivity(), us.get(0).getID(), Toast.LENGTH_LONG).show();
+                        ArrayList<Message> msgs = new ArrayList<Message>();
+                        if(us.get(0).getMessages() != null)
+                            msgs = us.get(0).getMessages();
+
+                        Toast.makeText(getActivity(), msgs.toString(), Toast.LENGTH_LONG).show();
+
+                        msgs.add(mMsg);
+
+                        //db.collection("Users").document().collection(us.get(0).getID()).document("messages").set(msgs);
+                    }
+                });
+
+
             }
         });
     }

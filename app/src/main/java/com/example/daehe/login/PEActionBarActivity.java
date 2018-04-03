@@ -1,15 +1,12 @@
 package com.example.daehe.login;
 
 import android.app.FragmentManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,43 +14,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.login.Login;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-<<<<<<< HEAD
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
-
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-=======
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import org.w3c.dom.Document;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
->>>>>>> Daehee
-
-import static android.content.ContentValues.TAG;
 
 public class PEActionBarActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -62,13 +33,9 @@ public class PEActionBarActivity extends AppCompatActivity
     private ActionBarDrawerToggle mToggle;
     private DrawerLayout mDrawerLayout;
     private User user;
-<<<<<<< HEAD
     private ArrayList<Event> events = new ArrayList<Event>();
     private ArrayList<String> ids = new ArrayList<String>();
-    FirebaseFirestore db;
-=======
     private FirebaseFirestore db;
->>>>>>> Daehee
 
     public User getUser(){
         return user;
@@ -104,16 +71,16 @@ public class PEActionBarActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         mToggle.syncState();
-<<<<<<< HEAD
-        ;
+
         if(LoginActivity.mGoogleApiClient != null && LoginActivity.mGoogleApiClient.isConnected())
         {
             GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
             if (acct != null) {
+                String id = acct.getId();
                 String name = acct.getDisplayName();
                 String email = acct.getEmail();
-                Uri photo = acct.getPhotoUrl();
-                user = new User(name, email, photo, new ArrayList<Message>(), new ArrayList<Event>());
+                String photo = acct.getPhotoUrl().toString();
+                user = new User(id, name, email, photo, new ArrayList<Message>(), new ArrayList<Event>());
                 View hView =  navigationView.getHeaderView(0);
                 if(user.getImage() != null)
                     new DownloadImageTask((ImageView) hView.findViewById(R.id.nav_image_view)).execute(user.getImage().toString());
@@ -130,29 +97,11 @@ public class PEActionBarActivity extends AppCompatActivity
             navTxt.setText(name);
         }
 
+        DocumentReference doc = db.collection("Users").document();
 
-=======
-
-        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
-        if (acct != null) {
-            String id = acct.getId();
-            String name = acct.getDisplayName();
-            String email = acct.getEmail();
-            String photo = acct.getPhotoUrl().toString();
-            user = new User(id, name, email, photo, new ArrayList<Message>(), new ArrayList<Event>());
-
-            DocumentReference doc = db.collection("Users").document();
-
-            db.collection("Users")
-                    .document(user.getID())
-                    .set(user);
-        }
-        View hView =  navigationView.getHeaderView(0);
-        if(user.getImage() != null)
-            new DownloadImageTask((ImageView) hView.findViewById(R.id.nav_image_view)).execute(user.getImage().toString());
-        TextView navTxt = (TextView)hView.findViewById(R.id.nav_text_view);
-        navTxt.setText(user.getName());
->>>>>>> Daehee
+        db.collection("Users")
+                .document(user.getID())
+                .set(user);
     }
 
     @Override
