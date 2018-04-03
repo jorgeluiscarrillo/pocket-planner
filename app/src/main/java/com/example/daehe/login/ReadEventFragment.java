@@ -15,6 +15,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -92,23 +94,49 @@ public class ReadEventFragment extends Fragment {
                             public void onClick(DialogInterface dialog, int which) {
                                 int pos = activity.GetEvents().indexOf(event);
 
-                                db.collection("Events")
-                                        .document("user")
-                                        .collection("Events")
-                                        .document(activity.GetEventIds().get(pos))
-                                        .delete()
-                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-                                                //Toast.makeText(getContext(),"Event deleted!", Toast.LENGTH_SHORT).show();
-                                            }
-                                        })
-                                        .addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                //Toast.makeText(getContext(),"Event could not be deleted", Toast.LENGTH_SHORT).show();
-                                            }
-                                        });
+
+                                if(LoginActivity.mGoogleApiClient != null)
+                                {
+                                    GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(getContext());
+                                    db.collection("Events")
+                                            .document(acct.getId())
+                                            .collection("Events")
+                                            .document(activity.GetEventIds().get(pos))
+                                            .delete()
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    //Toast.makeText(getContext(),"Event deleted!", Toast.LENGTH_SHORT).show();
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    //Toast.makeText(getContext(),"Event could not be deleted", Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
+                                }
+
+                                if(LoginActivity.isLoggedInFB())
+                                {
+                                    db.collection("Events")
+                                            .document(LoginActivity.GetFacebookID())
+                                            .collection("Events")
+                                            .document(activity.GetEventIds().get(pos))
+                                            .delete()
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    //Toast.makeText(getContext(),"Event deleted!", Toast.LENGTH_SHORT).show();
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    //Toast.makeText(getContext(),"Event could not be deleted", Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
+                                }
                                 activity.GetEvents().remove(pos);
                                 activity.GetEventIds().remove(pos);
 

@@ -1,9 +1,11 @@
 package com.example.daehe.login;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,7 +13,10 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.text.InputFilter;
+import android.text.InputType;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +34,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Scroller;
 import android.widget.TextView;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -54,6 +60,7 @@ public class EventFragment extends Fragment {
     private String eventLoc;
     private String eventDate;
     private String eventTime;
+    private String eventDescription;
     private FirebaseFirestore db;
     private EditText date;
     private Calendar myCalendar = Calendar.getInstance();
@@ -61,6 +68,7 @@ public class EventFragment extends Fragment {
     private EditText location;
     private EditText startTime;
     private Button confirm;
+    private Button addDescription;
     private PEActionBarActivity activity;
     private Context mContext;
     private static final int PLACE_PICKER_REQUEST = 1;
@@ -128,8 +136,47 @@ public class EventFragment extends Fragment {
                     Log.e(TAG, "onClick: GooglePlayServicesRepairableException: " + e.getMessage() );
                 } catch (GooglePlayServicesNotAvailableException e) {
                     Log.e(TAG, "onClick: GooglePlayServicesNotAvailableException: " + e.getMessage() );
-
                 }
+            }
+        });
+
+        addDescription = (Button) view.findViewById(R.id.input_description);
+        addDescription.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+
+                builder.setTitle("Add Description (limit 200 character)");
+                final EditText input = new EditText(getContext());
+                // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+                input.setInputType(InputType.TYPE_TEXT_VARIATION_WEB_EDIT_TEXT);
+                input.setFilters(new InputFilter[] { new InputFilter.LengthFilter(200) });
+                input.setSingleLine(false);  //add this
+                input.setLines(4);
+                input.setMaxLines(5);
+                input.setGravity(Gravity.LEFT | Gravity.TOP);
+                input.setScroller(new Scroller(getContext()));
+                input.setVerticalScrollBarEnabled(true);
+                input.setText(eventDescription);
+                //input.setMovementMethod(new ScrollingMovementMethod());
+                builder.setView(input);
+
+                // Set up the buttons
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        eventDescription = input.getText().toString();
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+                builder.show();
             }
         });
 
@@ -179,7 +226,7 @@ public class EventFragment extends Fragment {
                     {
 
                     }
-                    Event e = new Event(eventName,eventLoc,inputDate,"","", Calendar.getInstance().getTime(), false);
+
                     /*
                     db.collection("Events").document("event").set(e).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
@@ -198,6 +245,7 @@ public class EventFragment extends Fragment {
                     if(LoginActivity.mGoogleApiClient != null)
                     {
                         GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(getContext());
+                        Event e = new Event(eventName,eventLoc,inputDate,eventDescription,acct.getDisplayName(), Calendar.getInstance().getTime(), false);
                         DocumentReference doc = db.collection("Events")
                                 .document(String.valueOf(acct.getId()))
                                 .collection("Events")
@@ -215,6 +263,7 @@ public class EventFragment extends Fragment {
 
                     if(LoginActivity.isLoggedInFB())
                     {
+                        Event e = new Event(eventName,eventLoc,inputDate,eventDescription,LoginActivity.GetDisplayName(), Calendar.getInstance().getTime(), false);
                         DocumentReference doc = db.collection("Events")
                                 .document(LoginActivity.GetFacebookID())
                                 .collection("Events")
@@ -243,6 +292,7 @@ public class EventFragment extends Fragment {
         if (requestCode == PLACE_PICKER_REQUEST) {
             if (resultCode == RESULT_OK) {
                 Place place = PlacePicker.getPlace(mContext, data);
+                location.setText(place.getAddress());
             }
         }
     }

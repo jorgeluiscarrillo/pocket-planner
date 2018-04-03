@@ -1,22 +1,28 @@
 package com.example.daehe.login;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.text.InputFilter;
+import android.text.InputType;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Scroller;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -52,6 +58,7 @@ public class UpdateFragment extends Fragment {
     private String eventLoc;
     private String eventDate;
     private String eventTime;
+    private String eventDescription;
     private Activity c;
     private Dialog d;
     private FirebaseFirestore db;
@@ -62,6 +69,7 @@ public class UpdateFragment extends Fragment {
     private EditText location;
     private EditText startTime;
     private Button confirm;
+    private Button addDescription;
     private Event updatedEvent;
     private FragmentManager fragMan;
     private PEActionBarActivity activity;
@@ -72,6 +80,7 @@ public class UpdateFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         myView=inflater.inflate(R.layout.fragment_create_event,container,false);
+        mContext=getActivity();
         return myView;
     }
 
@@ -89,6 +98,7 @@ public class UpdateFragment extends Fragment {
         date =(EditText) view.findViewById(R.id.input_date);
         startTime = (EditText) view.findViewById(R.id.input_sTime);
         confirm=(Button) view.findViewById(R.id.event_button);
+        addDescription = (Button) view.findViewById(R.id.input_description);
 
         String dateFormat = "MM/dd/yy";
         String timeFormat = "hh:mm aa";
@@ -101,6 +111,7 @@ public class UpdateFragment extends Fragment {
         location.setText(updatedEvent.getLocation());
         date.setText(sdf.format(eDate));
         startTime.setText(sdfTime.format(eDate));
+        eventDescription = updatedEvent.getDescription();
 
         final DatePickerDialog.OnDateSetListener datePick = new DatePickerDialog.OnDateSetListener() {
             @Override
@@ -158,6 +169,44 @@ public class UpdateFragment extends Fragment {
             }
         });
 
+        addDescription.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+
+                builder.setTitle("Add Description (limit 200 character)");
+                final EditText input = new EditText(getContext());
+                // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+                input.setInputType(InputType.TYPE_TEXT_VARIATION_WEB_EDIT_TEXT);
+                input.setFilters(new InputFilter[] { new InputFilter.LengthFilter(200) });
+                input.setSingleLine(false);  //add this
+                input.setLines(4);
+                input.setMaxLines(5);
+                input.setGravity(Gravity.LEFT | Gravity.TOP);
+                input.setScroller(new Scroller(getContext()));
+                input.setVerticalScrollBarEnabled(true);
+                input.setText(eventDescription);
+                //input.setMovementMethod(new ScrollingMovementMethod());
+                builder.setView(input);
+
+                // Set up the buttons
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        eventDescription = input.getText().toString();
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+                builder.show();
+            }
+        });
+
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -165,6 +214,7 @@ public class UpdateFragment extends Fragment {
                 eventLoc = location.getText().toString();
                 eventDate = date.getText().toString();
                 eventTime = startTime.getText().toString();
+
                 if(isEmpty(name))
                 {
                     name.setError("Name cannot be empty");
@@ -197,6 +247,7 @@ public class UpdateFragment extends Fragment {
                     updatedEvent.setName(eventName);
                     updatedEvent.setLocation(eventLoc);
                     updatedEvent.setDate(inputDate);
+                    updatedEvent.setDescription(eventDescription);
 
                     int pos = activity.GetEvents().indexOf(updatedEvent);
 

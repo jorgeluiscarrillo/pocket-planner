@@ -26,7 +26,7 @@ public class User {
         this.email = email;
         this.image = image;
         messages = msgs;
-        events = events;
+        this.events = events;
     }
 
     public void setId(String id) {
