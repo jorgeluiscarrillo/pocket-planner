@@ -20,7 +20,6 @@ import android.widget.Toast;
 import com.facebook.login.Login;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-<<<<<<< HEAD
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -30,7 +29,6 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-=======
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -51,7 +49,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
->>>>>>> Daehee
 
 import static android.content.ContentValues.TAG;
 
@@ -62,13 +59,9 @@ public class PEActionBarActivity extends AppCompatActivity
     private ActionBarDrawerToggle mToggle;
     private DrawerLayout mDrawerLayout;
     private User user;
-<<<<<<< HEAD
     private ArrayList<Event> events = new ArrayList<Event>();
     private ArrayList<String> ids = new ArrayList<String>();
     FirebaseFirestore db;
-=======
-    private FirebaseFirestore db;
->>>>>>> Daehee
 
     public User getUser(){
         return user;
@@ -104,8 +97,7 @@ public class PEActionBarActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         mToggle.syncState();
-<<<<<<< HEAD
-        ;
+
         if(LoginActivity.mGoogleApiClient != null && LoginActivity.mGoogleApiClient.isConnected())
         {
             GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
@@ -113,7 +105,7 @@ public class PEActionBarActivity extends AppCompatActivity
                 String name = acct.getDisplayName();
                 String email = acct.getEmail();
                 Uri photo = acct.getPhotoUrl();
-                user = new User(name, email, photo, new ArrayList<Message>(), new ArrayList<Event>());
+                user = new User(acct.getId(),name, email, photo.toString(), new ArrayList<Message>(), new ArrayList<Event>());
                 View hView =  navigationView.getHeaderView(0);
                 if(user.getImage() != null)
                     new DownloadImageTask((ImageView) hView.findViewById(R.id.nav_image_view)).execute(user.getImage().toString());
@@ -129,30 +121,6 @@ public class PEActionBarActivity extends AppCompatActivity
             TextView navTxt = (TextView) hView.findViewById(R.id.nav_text_view);
             navTxt.setText(name);
         }
-
-
-=======
-
-        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
-        if (acct != null) {
-            String id = acct.getId();
-            String name = acct.getDisplayName();
-            String email = acct.getEmail();
-            String photo = acct.getPhotoUrl().toString();
-            user = new User(id, name, email, photo, new ArrayList<Message>(), new ArrayList<Event>());
-
-            DocumentReference doc = db.collection("Users").document();
-
-            db.collection("Users")
-                    .document(user.getID())
-                    .set(user);
-        }
-        View hView =  navigationView.getHeaderView(0);
-        if(user.getImage() != null)
-            new DownloadImageTask((ImageView) hView.findViewById(R.id.nav_image_view)).execute(user.getImage().toString());
-        TextView navTxt = (TextView)hView.findViewById(R.id.nav_text_view);
-        navTxt.setText(user.getName());
->>>>>>> Daehee
     }
 
     @Override
