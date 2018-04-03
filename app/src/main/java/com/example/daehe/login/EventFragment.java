@@ -292,6 +292,7 @@ public class EventFragment extends Fragment {
         if (requestCode == PLACE_PICKER_REQUEST) {
             if (resultCode == RESULT_OK) {
                 Place place = PlacePicker.getPlace(mContext, data);
+                location.setText(place.getAddress());
             }
         }
     }
