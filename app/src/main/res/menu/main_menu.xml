@@ -6,39 +6,28 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/home_button"
-            android:title="Home"/>
-        <!--android:icon="@drawable/ic_menu_camera"-->
+            android:title="Home"
+            android:icon="@drawable/ic_home"/>
 
         <item
             android:id="@+id/nav_createEvent"
-            android:title="Create Event" />
-        <!--android:icon="@drawable/ic_menu_camera"-->
+            android:title="Create Event"
+            android:icon="@drawable/ic_event_create"/>
 
         <item
             android:id="@+id/nav_viewEvent"
-            android:title="View Events" />
-        <!--android:icon="@drawable/ic_menu_camera"-->
-
-        <item
-            android:id="@+id/nav_other"
-            android:title="Other" />
-        <!--android:icon="@drawable/ic_menu_camera"-->
+            android:title="View Events"
+            android:icon="@drawable/ic_event_view"/>
 
         <item
             android:id="@+id/nav_message"
-            android:title="Message" />
+            android:title="Message"
+            android:icon="@drawable/ic_message"/>
 
         <item
             android:id="@+id/nav_signOut"
-            android:title="Sign Out" />
-        <!--<item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Slideshow" />
-        <item
-            android:id="@+id/nav_manage"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Tools" />-->
+            android:title="Sign Out"
+            android:icon="@drawable/ic_signout"/>
     </group>
 
     <!--<item android:title="Communicate">
