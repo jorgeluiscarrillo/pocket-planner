@@ -1,6 +1,7 @@
 package com.example.daehe.login;
 
 import android.app.FragmentManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -18,20 +19,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-<<<<<<< HEAD
-=======
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
-
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
->>>>>>> 853684c718907ed2f2f76cc18183016dbe920a5d
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -39,12 +26,6 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
-<<<<<<< HEAD
-=======
-import java.util.Locale;
-
-import static android.content.ContentValues.TAG;
->>>>>>> 853684c718907ed2f2f76cc18183016dbe920a5d
 
 public class PEActionBarActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -55,12 +36,7 @@ public class PEActionBarActivity extends AppCompatActivity
     private User user;
     private ArrayList<Event> events = new ArrayList<Event>();
     private ArrayList<String> ids = new ArrayList<String>();
-<<<<<<< HEAD
     private FirebaseFirestore db;
-=======
-    FirebaseFirestore db;
->>>>>>> 853684c718907ed2f2f76cc18183016dbe920a5d
-
     public User getUser(){
         return user;
     }
@@ -103,17 +79,12 @@ public class PEActionBarActivity extends AppCompatActivity
                 String id = acct.getId();
                 String name = acct.getDisplayName();
                 String email = acct.getEmail();
-<<<<<<< HEAD
-                String photo = acct.getPhotoUrl().toString();
-                user = new User(id, name, email, photo, new ArrayList<Message>(), new ArrayList<Event>());
-=======
                 Uri photo = acct.getPhotoUrl();
                 if (photo != null) {
                     user = new User(acct.getId(),name, email, photo.toString(), new ArrayList<Message>(), new ArrayList<Event>());
                 } else {
                     user = new User(acct.getId(),name, email, null, new ArrayList<Message>(), new ArrayList<Event>());
                 }
->>>>>>> 853684c718907ed2f2f76cc18183016dbe920a5d
                 View hView =  navigationView.getHeaderView(0);
                 if(user.getImage() != null)
                     new DownloadImageTask((ImageView) hView.findViewById(R.id.nav_image_view)).execute(user.getImage().toString());
@@ -129,15 +100,12 @@ public class PEActionBarActivity extends AppCompatActivity
             TextView navTxt = (TextView) hView.findViewById(R.id.nav_text_view);
             navTxt.setText(name);
         }
-<<<<<<< HEAD
 
         DocumentReference doc = db.collection("Users").document();
 
         db.collection("Users")
                 .document(user.getID())
                 .set(user);
-=======
->>>>>>> 853684c718907ed2f2f76cc18183016dbe920a5d
     }
 
     @Override
