@@ -105,7 +105,11 @@ public class PEActionBarActivity extends AppCompatActivity
                 String name = acct.getDisplayName();
                 String email = acct.getEmail();
                 Uri photo = acct.getPhotoUrl();
-                user = new User(acct.getId(),name, email, photo.toString(), new ArrayList<Message>(), new ArrayList<Event>());
+                if (photo != null) {
+                    user = new User(acct.getId(),name, email, photo.toString(), new ArrayList<Message>(), new ArrayList<Event>());
+                } else {
+                    user = new User(acct.getId(),name, email, null, new ArrayList<Message>(), new ArrayList<Event>());
+                }
                 View hView =  navigationView.getHeaderView(0);
                 if(user.getImage() != null)
                     new DownloadImageTask((ImageView) hView.findViewById(R.id.nav_image_view)).execute(user.getImage().toString());
