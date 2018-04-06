@@ -33,6 +33,7 @@ import static com.facebook.share.internal.DeviceShareDialogFragment.TAG;
 public class MessageFragment extends Fragment {
     View myView;
     ArrayList<Message> msgs;
+    ListView lvInbox;
 
     private static final String TAG = "Message Fragment: ";
     private FirebaseFirestore db;
@@ -49,48 +50,41 @@ public class MessageFragment extends Fragment {
     }
 
     private void loadInbox(){
-        ListView lvInbox = (ListView) myView.findViewById(R.id.lvInbox);
+        lvInbox = (ListView) myView.findViewById(R.id.lvInbox);
         msgs = new ArrayList<Message>();
 
         db = FirebaseFirestore.getInstance();
 
-        DocumentReference doc = db.collection("Users").document();
-
-        db.collection("Users")
-                .document(((PEActionBarActivity)getActivity()).getUser().getID())
+        db.collection("Messages")
+                .whereEqualTo("receiver", ((PEActionBarActivity)getActivity()).getUser().getEmail())
                 .get()
-                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        if (!documentSnapshot.exists()) {
-                            Log.d(TAG, "onSuccess: LIST EMPTY");
-                            return;
-                        } else {
-                            User user = documentSnapshot.toObject(User.class);
-                            msgs = user.getMessages();
-
-                            Toast.makeText(getApplicationContext(), "Messages are loaded", Toast.LENGTH_LONG).show();
+                    public void onSuccess(QuerySnapshot documentSnapshots) {
+                        for(DocumentSnapshot d : documentSnapshots){
+                            Message m = d.toObject(Message.class);
+                            msgs.add(m);
                         }
+
+                        MessageAdapter adapter = new MessageAdapter(getActivity(), msgs);
+
+                        lvInbox.setAdapter(adapter);
+
+                        lvInbox.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                                ReadMessageFragment rmf = new ReadMessageFragment();
+                                rmf.setMessage(msgs.get(i));
+                                rmf.setReadOnly(true);
+                                getActivity().getSupportFragmentManager()
+                                        .beginTransaction( )
+                                        .replace(R.id.contentframe, rmf)
+                                        .addToBackStack(null)
+                                        .commit();
+                            }
+                        });
                     }
                 });
-
-        MessageAdapter adapter = new MessageAdapter(getActivity(), msgs);
-
-        lvInbox.setAdapter(adapter);
-
-        lvInbox.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                ReadMessageFragment rmf = new ReadMessageFragment();
-                rmf.setMessage(msgs.get(i));
-                rmf.setReadOnly(true);
-                getActivity().getSupportFragmentManager()
-                        .beginTransaction( )
-                        .replace(R.id.contentframe, rmf)
-                        .addToBackStack(null)
-                        .commit();
-            }
-        });
     }
 
     private void loadButton(){

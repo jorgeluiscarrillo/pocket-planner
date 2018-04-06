@@ -5,39 +5,6 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true">
-        <Button
-            android:id="@+id/bBack"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/back_button"/>
-
-        <FrameLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
-            <Button
-                android:id="@+id/bReply"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/reply_button"
-                android:visibility="visible"
-                tools:visibility="gone"/>
-            <Button
-                android:id="@+id/bSend"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/send_button"
-                android:visibility="invisible"
-                tools:visibility="gone"/>
-        </FrameLayout>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         tools:context="com.example.daehe.login.ReadMessageFragment">
@@ -86,10 +53,44 @@
         <EditText
             android:id="@+id/etBody"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Text Body"
+            android:layout_height="match_parent"
             android:background="@android:color/transparent"
+            android:hint="Text Body"
+            android:gravity="top|left"
             android:inputType="textMultiLine" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+        <Button
+            android:id="@+id/bBack"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/back_button"/>
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+            <Button
+                android:id="@+id/bReply"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/reply_button"
+                android:visibility="visible"
+                tools:visibility="gone"/>
+            <Button
+                android:id="@+id/bSend"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/send_button"
+                android:visibility="invisible"
+                tools:visibility="gone"/>
+        </FrameLayout>
 
     </LinearLayout>
 

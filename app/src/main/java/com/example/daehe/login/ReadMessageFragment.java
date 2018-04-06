@@ -28,6 +28,7 @@ public class ReadMessageFragment extends Fragment {
     private View myView;
     private Message mMsg;
     private Boolean isReadOnly = false;
+    private Boolean isReply = false;
     private TextView tvSender;
     private EditText etReceiver;
     private EditText etTitle;
@@ -37,6 +38,9 @@ public class ReadMessageFragment extends Fragment {
     private Button bReply;
     private Button bSend;
     private User userContext;
+    private String reply_receiver;
+    private String reply_title;
+
 
     private FirebaseFirestore db;
 
@@ -70,34 +74,48 @@ public class ReadMessageFragment extends Fragment {
         bSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String sender = userContext.getEmail();
-                String receiver = etReceiver.getText().toString();
-                String title = etTitle.getText().toString();
-                String body = etBody.getText().toString();
+                sendMessage();
+            }
+        });
 
-                mMsg = new Message(title, sender, receiver, body);
+        bBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().onBackPressed();
+            }
+        });
 
-                CollectionReference cr = db.collection("Users");
+        bReply.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ReadMessageFragment rmf = new ReadMessageFragment();
+                rmf.setReply(tvSender.getText().toString(), etTitle.getText().toString());
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.contentframe, rmf)
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
+    }
 
-                cr.whereEqualTo("email", receiver).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot documentSnapshots) {
-                        List<User> us = documentSnapshots.toObjects(User.class);
+    public void sendMessage(){
+        String sender = userContext.getEmail();
+        String receiver = etReceiver.getText().toString();
+        String title = etTitle.getText().toString();
+        String body = etBody.getText().toString();
 
-                        Toast.makeText(getActivity(), us.get(0).getID(), Toast.LENGTH_LONG).show();
-                        ArrayList<Message> msgs = new ArrayList<Message>();
-                        if(us.get(0).getMessages() != null)
-                            msgs = us.get(0).getMessages();
+        mMsg = new Message(title, sender, receiver, body);
 
-                        Toast.makeText(getActivity(), msgs.toString(), Toast.LENGTH_LONG).show();
+        CollectionReference cr = db.collection("Users");
 
-                        msgs.add(mMsg);
+        String key = db.collection("Messages").document().getId();
 
-                        //db.collection("Users").document().collection(us.get(0).getID()).document("messages").set(msgs);
-                    }
-                });
-
-
+        db.collection("Messages").document(key).set(mMsg).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Toast.makeText(getActivity(), "Message is sent", Toast.LENGTH_LONG).show();
+                clearFields();
             }
         });
     }
@@ -110,7 +128,19 @@ public class ReadMessageFragment extends Fragment {
         isReadOnly = ro;
     }
 
-    public void readOnly(boolean read){
+    public void setReply(String receiver, String title){
+        isReply = true;
+        reply_receiver = receiver;
+        reply_title = "Re:" + title;
+    }
+
+    private void clearFields(){
+        etReceiver.setText(null);
+        etTitle.setText(null);
+        etBody.setText(null);
+    }
+
+    private void readOnly(boolean read){
         if(read) {
             etDateTime.setVisibility(View.VISIBLE);
             bReply.setVisibility(View.VISIBLE);
@@ -133,6 +163,10 @@ public class ReadMessageFragment extends Fragment {
             etDateTime.setText(String.format("%tc", mMsg.getDateAndTime()));
         }
         else{
+            if(isReply){
+                etReceiver.setText(reply_receiver);
+                etTitle.setText(reply_title);
+            }
             tvSender.setText(userContext.getName() + " (" + userContext.getEmail() + ")");
             etDateTime.setVisibility(View.GONE);
             bReply.setVisibility(View.GONE);
