@@ -28,6 +28,7 @@ public class MessageAdapter extends ArrayAdapter<Message> {
         }
         // Lookup view for data population
         TextView tvSender = (TextView) convertView.findViewById(R.id.tvSender);
+        tvSender.setTextSize(15);
         TextView tvDate = (TextView) convertView.findViewById(R.id.tvDate);
         TextView tvTime = (TextView) convertView.findViewById(R.id.tvTime);
         TextView tvTitle = (TextView) convertView.findViewById(R.id.tvTitle);
