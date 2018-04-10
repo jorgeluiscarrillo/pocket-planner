@@ -22,6 +22,8 @@ import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
 import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
@@ -38,6 +40,8 @@ import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.common.GoogleApiAvailability;
+
+import org.json.JSONObject;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -60,6 +64,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private static final int ERROR_DIALOG_REQUEST = 9001;
     private LoginButton btnFBLogin;
     private CallbackManager cbmFacebook;
+    private static String email;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -88,6 +93,17 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         btnFBLogin.registerCallback(cbmFacebook, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
+                GraphRequest.newMeRequest(
+                        AccessToken.getCurrentAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
+                            @Override
+                            public void onCompleted(JSONObject object, GraphResponse response) {
+                                if (response.getError() != null) {
+                                    // handle error
+                                } else {
+                                    email = object.optString("email");
+                                }
+                            }
+                        }).executeAsync();
                 updateUI(true);
             }
 
@@ -286,6 +302,11 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     public static String GetDisplayName()
     {
         return Profile.getCurrentProfile().getName();
+    }
+
+    public static String GetFacebookEmail()
+    {
+        return email;
     }
 
     protected void setGooglePlusButtonText(SignInButton signInButton, String buttonText) {

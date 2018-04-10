@@ -69,7 +69,7 @@ public class UpdateFragment extends Fragment {
     private EditText location;
     private EditText startTime;
     private Button confirm;
-    private Button addDescription;
+    private TextView addDescription;
     private Event updatedEvent;
     private FragmentManager fragMan;
     private PEActionBarActivity activity;
@@ -98,7 +98,7 @@ public class UpdateFragment extends Fragment {
         date =(EditText) view.findViewById(R.id.input_date);
         startTime = (EditText) view.findViewById(R.id.input_sTime);
         confirm=(Button) view.findViewById(R.id.event_button);
-        addDescription = (Button) view.findViewById(R.id.input_description);
+        addDescription = (TextView) view.findViewById(R.id.desc_text);
 
         String dateFormat = "MM/dd/yy";
         String timeFormat = "hh:mm aa";
@@ -257,6 +257,10 @@ public class UpdateFragment extends Fragment {
                         db.collection("Events")
                                 .document(acct.getId())
                                 .collection("Events")
+                                .document(activity.GetEventIds().get(pos))
+                                .set(updatedEvent);
+
+                        db.collection("All Events")
                                 .document(activity.GetEventIds().get(pos))
                                 .set(updatedEvent);
                     }

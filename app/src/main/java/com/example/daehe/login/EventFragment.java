@@ -48,6 +48,7 @@ import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -60,7 +61,7 @@ public class EventFragment extends Fragment {
     private String eventLoc;
     private String eventDate;
     private String eventTime;
-    private String eventDescription;
+    private String eventDescription="";
     private FirebaseFirestore db;
     private EditText date;
     private Calendar myCalendar = Calendar.getInstance();
@@ -68,8 +69,9 @@ public class EventFragment extends Fragment {
     private EditText location;
     private EditText startTime;
     private Button confirm;
-    private Button addDescription;
+    private TextView addDescription;
     private PEActionBarActivity activity;
+    private LatLng eventLatLng;
     private Context mContext;
     private static final int PLACE_PICKER_REQUEST = 1;
 
@@ -140,7 +142,7 @@ public class EventFragment extends Fragment {
             }
         });
 
-        addDescription = (Button) view.findViewById(R.id.input_description);
+        addDescription = (TextView) view.findViewById(R.id.desc_text);
         addDescription.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -167,6 +169,7 @@ public class EventFragment extends Fragment {
                     public void onClick(DialogInterface dialog, int which) {
 
                         eventDescription = input.getText().toString();
+                        updateDes();
                     }
                 });
                 builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -242,14 +245,17 @@ public class EventFragment extends Fragment {
                         }
                     });*/
 
-                    if(LoginActivity.mGoogleApiClient != null)
+                    if(activity.getGoogleSignIn())
                     {
                         GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(getContext());
-                        Event e = new Event(eventName,eventLoc,inputDate,eventDescription,acct.getDisplayName(), Calendar.getInstance().getTime(), false);
-                        DocumentReference doc = db.collection("Events")
-                                .document(String.valueOf(acct.getId()))
-                                .collection("Events")
+                        Event e = new Event(eventName,eventLoc,inputDate,eventDescription,acct.getDisplayName(), Calendar.getInstance().getTime(), false, eventLatLng);
+
+                        DocumentReference doc = db.collection("All Events")
                                 .document();
+
+                        db.collection("All Events")
+                                .document(doc.getId())
+                                .set(e);
 
                         db.collection("Events")
                                 .document(String.valueOf(acct.getId()))
@@ -261,9 +267,9 @@ public class EventFragment extends Fragment {
                         activity.AddId(doc.getId());
                     }
 
-                    if(LoginActivity.isLoggedInFB())
+                    if(activity.getFacebookSignIn())
                     {
-                        Event e = new Event(eventName,eventLoc,inputDate,eventDescription,LoginActivity.GetDisplayName(), Calendar.getInstance().getTime(), false);
+                        Event e = new Event(eventName,eventLoc,inputDate,eventDescription,LoginActivity.GetDisplayName(), Calendar.getInstance().getTime(), false, eventLatLng);
                         DocumentReference doc = db.collection("Events")
                                 .document(LoginActivity.GetFacebookID())
                                 .collection("Events")
@@ -292,6 +298,7 @@ public class EventFragment extends Fragment {
         if (requestCode == PLACE_PICKER_REQUEST) {
             if (resultCode == RESULT_OK) {
                 Place place = PlacePicker.getPlace(mContext, data);
+                eventLatLng = place.getLatLng();
                 location.setText(place.getAddress());
             }
         }
@@ -308,6 +315,10 @@ public class EventFragment extends Fragment {
         String myFormat = "hh:mm aa";
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
         startTime.setText(sdf.format(myCalendar.getTime()));
+    }
+
+    private void updateDes(){
+        addDescription.setText(eventDescription);
     }
 
     private boolean isEmpty(EditText etText) {

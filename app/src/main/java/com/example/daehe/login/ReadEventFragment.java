@@ -137,6 +137,7 @@ public class ReadEventFragment extends Fragment {
                                                 }
                                             });
                                 }
+                                activity.GetAllEvents().remove(pos);
                                 activity.GetEvents().remove(pos);
                                 activity.GetEventIds().remove(pos);
 

@@ -61,6 +61,9 @@ public class PEActionBarActivity extends AppCompatActivity
     private User user;
     private ArrayList<Event> events = new ArrayList<Event>();
     private ArrayList<String> ids = new ArrayList<String>();
+    private ArrayList<Event> allEvents = new ArrayList<> ();
+    private boolean googleSignIn = false;
+    private boolean facebookSignIn = false;
     FirebaseFirestore db;
 
     public User getUser(){
@@ -71,13 +74,11 @@ public class PEActionBarActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState){
 
         super.onCreate(savedInstanceState);
-        db = FirebaseFirestore.getInstance();
     }
 
     protected void setMenuBar(int layout){
         setContentView(layout);
         db = FirebaseFirestore.getInstance();
-        getEventsFromDB();
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -98,8 +99,10 @@ public class PEActionBarActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         mToggle.syncState();
 
-        if(LoginActivity.mGoogleApiClient != null && LoginActivity.mGoogleApiClient.isConnected())
+        if(LoginActivity.mGoogleApiClient != null)
         {
+            googleSignIn = true;
+            facebookSignIn = false;
             GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
             if (acct != null) {
                 String name = acct.getDisplayName();
@@ -115,12 +118,17 @@ public class PEActionBarActivity extends AppCompatActivity
         }
         if(LoginActivity.isLoggedInFB())
         {
+            googleSignIn = false;
+            facebookSignIn = true;
             String name = LoginActivity.GetDisplayName();
             View hView =  navigationView.getHeaderView(0);
             new DownloadImageTask((ImageView) hView.findViewById(R.id.nav_image_view)).execute("https://graph.facebook.com/" + LoginActivity.GetFacebookID() + "/picture?type=large");
+            user = new User(LoginActivity.GetFacebookID(),name,LoginActivity.GetFacebookEmail(),"https://graph.facebook.com/" + LoginActivity.GetFacebookID() + "/picture?type=large", new ArrayList<Message>(), new ArrayList<Event>());
             TextView navTxt = (TextView) hView.findViewById(R.id.nav_text_view);
             navTxt.setText(name);
         }
+        getEventsFromDB();
+        GetAllEventsDB();
     }
 
     @Override
@@ -219,13 +227,16 @@ public class PEActionBarActivity extends AppCompatActivity
         }
         else
         {
+            db.collection("Users")
+                    .document(user.getID())
+                    .set(user);
             super.onBackPressed();
         }
     }
 
     private void getEventsFromDB()
     {
-        if(LoginActivity.mGoogleApiClient != null)
+        if(googleSignIn)
         {
             GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
             db.collection("Events")
@@ -265,7 +276,7 @@ public class PEActionBarActivity extends AppCompatActivity
                     });
         }
 
-        if(LoginActivity.isLoggedInFB())
+        if(facebookSignIn)
         {
             db.collection("Events")
                     .document(LoginActivity.GetFacebookID())
@@ -305,8 +316,42 @@ public class PEActionBarActivity extends AppCompatActivity
         }
     }
 
+    private void GetAllEventsDB()
+    {
+        db.collection("All Events")
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot documentSnapshots) {
+                        if(documentSnapshots.isEmpty())
+                        {
+                            Log.d(TAG,"onSuccess: LIST EMPTY");
+                        }
+                        else
+                        {
+                            //Toast.makeText(getApplicationContext(),"ID: " + ids.get(0), Toast.LENGTH_SHORT).show();
+                            // Convert the whole Query Snapshot to a list
+                            // of objects directly! No need to fetch each
+                            // document.
+                            List<Event> types = documentSnapshots.toObjects(Event.class);
+                            // Add all to your list
+                            allEvents.addAll(types);
+
+                            Log.d(TAG, "onSuccess: " + events);
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                    }
+                });
+    }
+
     public void AddEvents(Event e)
     {
+        user.getEvents().add(e);
         events.add(e);
     }
 
@@ -319,6 +364,8 @@ public class PEActionBarActivity extends AppCompatActivity
     {
         return events;
     }
+
+    public ArrayList<Event> GetAllEvents() { return allEvents; }
 
     public Event getEventFromList(int i)
     {
@@ -333,5 +380,15 @@ public class PEActionBarActivity extends AppCompatActivity
     public void AddId(String s)
     {
         ids.add(s);
+    }
+
+    public boolean getGoogleSignIn()
+    {
+        return googleSignIn;
+    }
+
+    public boolean getFacebookSignIn()
+    {
+        return facebookSignIn;
     }
 }

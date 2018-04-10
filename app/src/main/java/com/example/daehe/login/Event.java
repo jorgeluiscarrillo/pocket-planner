@@ -1,5 +1,7 @@
 package com.example.daehe.login;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.util.Calendar;
 import java.util.Date;
 
@@ -15,10 +17,11 @@ public class Event {
     private String owner;
     private Date timeMade;
     private Boolean isPrivate;
+    private LatLng latLng;
 
     public Event() {}
 
-    public Event(String n, String l, Date d, String des, String o, Date ct, Boolean p) {
+    public Event(String n, String l, Date d, String des, String o, Date ct, Boolean p, LatLng ll) {
         name = n;
         location = l;
         date = d;
@@ -26,6 +29,7 @@ public class Event {
         owner = o;
         timeMade = ct;
         isPrivate = p;
+        latLng = ll;
     }
 
     public String getName() {
@@ -52,6 +56,8 @@ public class Event {
 
     public Boolean getIsPrivate() {return isPrivate;}
 
+    public LatLng getLatLng() { return latLng; }
+
     public void setDate(Date date) {
         this.date = date;
     }
@@ -71,4 +77,6 @@ public class Event {
     public void setPrivate(Boolean aPrivate) {
         isPrivate = aPrivate;
     }
+
+    private void setLatLng(LatLng ll) {latLng=ll;}
 }
