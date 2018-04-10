@@ -53,8 +53,7 @@ public class PEActionBarActivity extends AppCompatActivity
     protected void setMenuBar(int layout){
         setContentView(layout);
         db = FirebaseFirestore.getInstance();
-        getEventsFromDB();
-        GetAllEventsDB();
+
         googleSignIn = false;
         facebookSignIn = false;
 
@@ -78,7 +77,7 @@ public class PEActionBarActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         mToggle.syncState();
 
-        if(LoginActivity.mGoogleApiClient != null)
+        if(LoginActivity.mGoogleApiClient != null )
         {
             googleSignIn = true;
             facebookSignIn = false;
@@ -114,9 +113,13 @@ public class PEActionBarActivity extends AppCompatActivity
 
         DocumentReference doc = db.collection("Users").document();
 
+
         db.collection("Users")
                 .document(user.getID())
                 .set(user);
+
+        getEventsFromDB();
+        GetAllEventsDB();
     }
 
     @Override

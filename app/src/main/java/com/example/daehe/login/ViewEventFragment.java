@@ -13,6 +13,8 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 /**
  * Created by Bryan on 3/2/2018.
  */
@@ -20,12 +22,13 @@ import android.widget.Toast;
 public class ViewEventFragment extends Fragment {
     View myView;
     PEActionBarActivity activity;
-
+    private ArrayList<Event> events;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         myView=inflater.inflate(R.layout.fragment_view_event,container,false);
         activity = (PEActionBarActivity) getActivity();
+        events = activity.GetEvents();
         loadEvents();
 
         return myView;
