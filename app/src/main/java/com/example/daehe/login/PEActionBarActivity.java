@@ -62,8 +62,8 @@ public class PEActionBarActivity extends AppCompatActivity
     private ArrayList<Event> events = new ArrayList<Event>();
     private ArrayList<String> ids = new ArrayList<String>();
     private ArrayList<Event> allEvents = new ArrayList<> ();
-    private boolean googleSignIn = false;
-    private boolean facebookSignIn = false;
+    private boolean googleSignIn;
+    private boolean facebookSignIn;
     FirebaseFirestore db;
 
     public User getUser(){
@@ -79,6 +79,11 @@ public class PEActionBarActivity extends AppCompatActivity
     protected void setMenuBar(int layout){
         setContentView(layout);
         db = FirebaseFirestore.getInstance();
+        getEventsFromDB();
+        GetAllEventsDB();
+        googleSignIn = false;
+        facebookSignIn = false;
+
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -127,8 +132,6 @@ public class PEActionBarActivity extends AppCompatActivity
             TextView navTxt = (TextView) hView.findViewById(R.id.nav_text_view);
             navTxt.setText(name);
         }
-        getEventsFromDB();
-        GetAllEventsDB();
     }
 
     @Override
@@ -382,12 +385,12 @@ public class PEActionBarActivity extends AppCompatActivity
         ids.add(s);
     }
 
-    public boolean getGoogleSignIn()
+    public boolean GetGoogleSignIn()
     {
         return googleSignIn;
     }
 
-    public boolean getFacebookSignIn()
+    public boolean GetFacebookSignIn()
     {
         return facebookSignIn;
     }

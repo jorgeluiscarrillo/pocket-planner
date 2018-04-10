@@ -73,6 +73,8 @@ public class EventFragment extends Fragment {
     private PEActionBarActivity activity;
     private LatLng eventLatLng;
     private Context mContext;
+    private String lat;
+    private String lon;
     private static final int PLACE_PICKER_REQUEST = 1;
 
     @Nullable
@@ -245,10 +247,10 @@ public class EventFragment extends Fragment {
                         }
                     });*/
 
-                    if(activity.getGoogleSignIn())
+                    if(activity.GetGoogleSignIn())
                     {
                         GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(getContext());
-                        Event e = new Event(eventName,eventLoc,inputDate,eventDescription,acct.getDisplayName(), Calendar.getInstance().getTime(), false, eventLatLng);
+                        Event e = new Event(eventName,eventLoc,inputDate,eventDescription,acct.getDisplayName(), Calendar.getInstance().getTime(), false, lat);
 
                         DocumentReference doc = db.collection("All Events")
                                 .document();
@@ -267,13 +269,16 @@ public class EventFragment extends Fragment {
                         activity.AddId(doc.getId());
                     }
 
-                    if(activity.getFacebookSignIn())
+                    if(activity.GetFacebookSignIn())
                     {
-                        Event e = new Event(eventName,eventLoc,inputDate,eventDescription,LoginActivity.GetDisplayName(), Calendar.getInstance().getTime(), false, eventLatLng);
-                        DocumentReference doc = db.collection("Events")
-                                .document(LoginActivity.GetFacebookID())
-                                .collection("Events")
+                        Event e = new Event(eventName,eventLoc,inputDate,eventDescription,LoginActivity.GetDisplayName(), Calendar.getInstance().getTime(), false, lat);
+
+                        DocumentReference doc = db.collection("All Events")
                                 .document();
+
+                        db.collection("All Events")
+                                .document(doc.getId())
+                                .set(e);
 
                         db.collection("Events")
                                 .document(LoginActivity.GetFacebookID())
@@ -300,6 +305,7 @@ public class EventFragment extends Fragment {
                 Place place = PlacePicker.getPlace(mContext, data);
                 eventLatLng = place.getLatLng();
                 location.setText(place.getAddress());
+                lat = place.getLatLng().toString();
             }
         }
     }

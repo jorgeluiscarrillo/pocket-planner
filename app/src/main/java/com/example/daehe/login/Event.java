@@ -17,11 +17,11 @@ public class Event {
     private String owner;
     private Date timeMade;
     private Boolean isPrivate;
-    private LatLng latLng;
+    private String lat;
 
     public Event() {}
 
-    public Event(String n, String l, Date d, String des, String o, Date ct, Boolean p, LatLng ll) {
+    public Event(String n, String l, Date d, String des, String o, Date ct, Boolean p, String lt) {
         name = n;
         location = l;
         date = d;
@@ -29,7 +29,7 @@ public class Event {
         owner = o;
         timeMade = ct;
         isPrivate = p;
-        latLng = ll;
+        lat = lt;
     }
 
     public String getName() {
@@ -56,7 +56,7 @@ public class Event {
 
     public Boolean getIsPrivate() {return isPrivate;}
 
-    public LatLng getLatLng() { return latLng; }
+    public String getLat() {return lat;}
 
     public void setDate(Date date) {
         this.date = date;
@@ -78,5 +78,5 @@ public class Event {
         isPrivate = aPrivate;
     }
 
-    private void setLatLng(LatLng ll) {latLng=ll;}
+    public void setLat(String lt) {lat=lt;}
 }
