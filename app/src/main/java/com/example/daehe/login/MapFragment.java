@@ -43,6 +43,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
@@ -63,6 +64,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     private AutoCompleteTextView mSearchText;
     private ImageView mGps;
 
+    PEActionBarActivity activity;
     private Boolean mLocationPermissionsGranted = false;
     private GoogleMap mMap;
     private FusedLocationProviderClient mFusedLocationProviderClient;
@@ -85,6 +87,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         mContext = getActivity();
 
         myView = inflater.inflate(R.layout.fragment_map,container,false);
+        activity = (PEActionBarActivity) getActivity();
         mSearchText = myView.findViewById(R.id.input_search);
         mGps = myView.findViewById(R.id.ic_gps);
 
@@ -111,7 +114,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     }
 
     private void init() {
-        Log.d(TAG, "init: initializing");
         mGoogleApiClient = new GoogleApiClient
                 .Builder(mContext)
                 .addApi(Places.GEO_DATA_API)
@@ -148,7 +150,25 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
             }
         });
 
+        loadMarkers();
         hideSoftKeyboard();
+    }
+
+    private void loadMarkers() {
+        ArrayList<Event> userEvents = activity.GetEvents();
+
+        for (Event e : userEvents) {
+            String latLng = e.getLat();
+            String[] tokens = latLng.split(",", 2);
+            String[] lat = tokens[0].split("\\(",2);
+            String[] lng = tokens[1].split("\\)",2);
+
+            mMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(Double.parseDouble(lat[1]), Double.parseDouble(lng[0])))
+                    .title(e.getName())
+                    .snippet(e.getDate().toString()));
+            Log.d(TAG, "init: Creating marker at Latitude: " + lat[1] + " Longitude: " + lng[0]);
+        }
     }
 
     private void geoLocate() {
