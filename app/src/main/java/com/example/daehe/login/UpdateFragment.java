@@ -251,7 +251,7 @@ public class UpdateFragment extends Fragment {
 
                     int pos = activity.GetEvents().indexOf(updatedEvent);
 
-                    if(LoginActivity.mGoogleApiClient != null)
+                    if(activity.GetGoogleSignIn())
                     {
                         GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(getContext());
                         db.collection("Events")
@@ -265,7 +265,7 @@ public class UpdateFragment extends Fragment {
                                 .set(updatedEvent);
                     }
 
-                    if(LoginActivity.isLoggedInFB())
+                    if(activity.GetFacebookSignIn())
                     {
                         db.collection("Events")
                                 .document(LoginActivity.GetFacebookID())

@@ -65,7 +65,7 @@ public class ReadEventFragment extends Fragment {
             eventOwner.setText(event.getOwner());
             eventLoc.setText(event.getLocation());
             eventDate.setText(dateFormat.format(event.getDate()));
-            eventDesc.setText("Description goes here");
+            eventDesc.setText(event.getDescription());
         }
 
         bUpdate.setOnClickListener(new View.OnClickListener() {
@@ -95,7 +95,7 @@ public class ReadEventFragment extends Fragment {
                                 int pos = activity.GetEvents().indexOf(event);
 
 
-                                if(LoginActivity.mGoogleApiClient != null)
+                                if(activity.GetGoogleSignIn())
                                 {
                                     GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(getContext());
                                     db.collection("Events")
@@ -117,7 +117,7 @@ public class ReadEventFragment extends Fragment {
                                             });
                                 }
 
-                                if(LoginActivity.isLoggedInFB())
+                                if(activity.GetFacebookSignIn())
                                 {
                                     db.collection("Events")
                                             .document(LoginActivity.GetFacebookID())
@@ -137,6 +137,22 @@ public class ReadEventFragment extends Fragment {
                                                 }
                                             });
                                 }
+                                db.collection("All Events")
+                                        .document(activity.GetEventIds().get(pos))
+                                        .delete()
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                //Toast.makeText(getContext(),"Event deleted!", Toast.LENGTH_SHORT).show();
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                //Toast.makeText(getContext(),"Event could not be deleted", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+
                                 activity.GetAllEvents().remove(pos);
                                 activity.GetEvents().remove(pos);
                                 activity.GetEventIds().remove(pos);

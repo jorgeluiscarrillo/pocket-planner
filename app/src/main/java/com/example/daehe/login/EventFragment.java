@@ -266,6 +266,7 @@ public class EventFragment extends Fragment {
                                 .set(e);
 
                         activity.AddEvents(e);
+                        activity.GetAllEvents().add(e);
                         activity.AddId(doc.getId());
                     }
 
