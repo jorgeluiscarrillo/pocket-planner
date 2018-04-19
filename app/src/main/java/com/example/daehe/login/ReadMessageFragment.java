@@ -160,7 +160,7 @@ public class ReadMessageFragment extends Fragment {
             etReceiver.setText(mMsg.getReceiver().toString());
             etTitle.setText(mMsg.getTitle());
             etBody.setText(mMsg.getContent());
-            etDateTime.setText(String.format("%tc", mMsg.getDateAndTime()));
+            etDateTime.setText(String.format("%tc", mMsg.getDate()));
         }
         else{
             if(isReply){

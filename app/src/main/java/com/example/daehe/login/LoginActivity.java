@@ -53,9 +53,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private User user = null;
     public static GoogleApiClient mGoogleApiClient;
     private SignInButton signInButton;
-    private Button signOutButton;
-    private Button proceedButton;
-    private Button detour;
     private Button disconnectButton;
     private LinearLayout signOutView;
     private ProgressDialog mProgressDialog;
@@ -65,6 +62,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private LoginButton btnFBLogin;
     private CallbackManager cbmFacebook;
     private static String email;
+    private static boolean logout = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -84,10 +82,10 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 .addApi(Auth.GOOGLE_SIGN_IN_API,gso)
                 .build();
 
+        mGoogleApiClient.connect();
+
         btnFBLogin = (LoginButton) findViewById(R.id.facebook_sign_in_button);
         signInButton = (SignInButton) findViewById(R.id.google_sign_in_button);
-        signOutButton = (Button) findViewById(R.id.sign_out_button);
-        detour = (Button) findViewById(R.id.detour);
         cbmFacebook = CallbackManager.Factory.create();
 
         btnFBLogin.registerCallback(cbmFacebook, new FacebookCallback<LoginResult>() {
@@ -104,7 +102,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                 }
                             }
                         }).executeAsync();
-                updateUI(true);
             }
 
             @Override
@@ -127,55 +124,14 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
         });
         setGooglePlusButtonText(signInButton, "Sign in with Google");
-
-        signOutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(mGoogleApiClient != null && mGoogleApiClient.isConnected())
-                {
-                    Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
-                            new ResultCallback<Status>() {
-                                @Override
-                                public void onResult(Status status) {
-                                    updateUI(false);
-                                }
-                            });
-                }
-                if (isLoggedInFB())
-                {
-
-                    LoginManager.getInstance().logOut();
-                    updateUI(false);
-                }
-            }
-
-        });
-
-        detour.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
-                startActivity(mainIntent);
-            }
-        });
-
-        if(isGooglePlayServicesInstalled()) {
-            proceedButton = (Button) findViewById(R.id.proceed);
-            proceedButton.setOnClickListener(new View.OnClickListener(){
-                @Override
-                public void onClick(View v){
-                    Intent mapIntent = new Intent(LoginActivity.this, MainActivity.class);
-                    startActivity(mapIntent);
-                }
-            });
-        }
     }
 
 
     @Override
     public void onStart() {
         super.onStart();
-
+        mGoogleApiClient.connect();
+        /*
         OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
         if (opr.isDone()) {
             // If the user's cached credentials are valid, the OptionalPendingResult will be "done"
@@ -196,6 +152,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 }
             });
         }
+        */
     }
 
     @Override
@@ -219,24 +176,21 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             acct = result.getSignInAccount();
             //Similarly you can get the email and photourl using acct.getEmail() and  acct.getPhotoUrl()
 
-            updateUI(true);
+            proceed(true);
         } else {
             // Signed out, show unauthenticated UI.
-            updateUI(false);
+            proceed(false);
         }
     }
 
-    private void updateUI(boolean signedIn) {
+    private void proceed(boolean signedIn) {
         if (signedIn || isLoggedInFB()) {
-            signInButton.setVisibility(View.GONE);
-            btnFBLogin.setVisibility(View.GONE);
-            signOutButton.setVisibility(View.VISIBLE);
-            proceedButton.setVisibility(View.VISIBLE);
+            if(isGooglePlayServicesInstalled()) {
+                Intent mapIntent = new Intent(LoginActivity.this, MainActivity.class);
+                startActivity(mapIntent);
+            }
         } else {
-            signInButton.setVisibility(View.VISIBLE);
-            btnFBLogin.setVisibility(View.VISIBLE);
-            signOutButton.setVisibility(View.GONE);
-            proceedButton.setVisibility(View.GONE);
+            Toast.makeText(this, "Sign in Failed", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -319,6 +273,19 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 tv.setText(buttonText);
                 return;
             }
+        }
+    }
+
+    public static void LogOut(){
+        if(mGoogleApiClient != null && mGoogleApiClient.isConnected())
+        {
+            Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
+                    new ResultCallback<Status>() {
+                        @Override
+                        public void onResult(Status status) {
+                            mGoogleApiClient.disconnect();
+                        }
+                    });
         }
     }
 }

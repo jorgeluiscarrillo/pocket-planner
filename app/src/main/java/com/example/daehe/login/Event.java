@@ -1,5 +1,7 @@
 package com.example.daehe.login;
 
+import android.support.annotation.NonNull;
+
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.Calendar;
@@ -9,7 +11,7 @@ import java.util.Date;
  * Created by Bryan on 2/27/2018.
  */
 
-public class Event {
+public class Event implements Comparable<Event> {
     private String name;
     private String location;
     private Date date;
@@ -79,4 +81,9 @@ public class Event {
     }
 
     public void setLat(String lt) {lat=lt;}
+
+    @Override
+    public int compareTo(@NonNull Event event) {
+        return date.compareTo(event.getDate());
+    }
 }
