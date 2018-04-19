@@ -34,8 +34,8 @@ public class MessageAdapter extends ArrayAdapter<Message> {
         TextView tvTitle = (TextView) convertView.findViewById(R.id.tvTitle);
         // Populate the data into the template view using the data object
         tvSender.setText(msg.getSender());
-        tvDate.setText(String.format("%tD", msg.getDate()));
-        tvTime.setText(String.format("%tR", msg.getDate()));
+        tvDate.setText(String.format("%tD", msg.getDateAndTime()));
+        tvTime.setText(String.format("%tR", msg.getDateAndTime()));
         tvTitle.setText(msg.getTitle());
         // Return the completed view to render on screen
         return convertView;

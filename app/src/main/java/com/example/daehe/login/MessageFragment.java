@@ -15,8 +15,6 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -27,7 +25,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
@@ -37,8 +34,6 @@ public class MessageFragment extends Fragment {
     View myView;
     ArrayList<Message> msgs;
     ListView lvInbox;
-    ProgressBar pbInbox;
-    RelativeLayout rlInbox;
 
     private static final String TAG = "Message Fragment: ";
     private FirebaseFirestore db;
@@ -56,13 +51,7 @@ public class MessageFragment extends Fragment {
 
     private void loadInbox(){
         lvInbox = (ListView) myView.findViewById(R.id.lvInbox);
-        pbInbox = (ProgressBar) myView.findViewById(R.id.pbInbox);
-        rlInbox = (RelativeLayout) myView.findViewById(R.id.rlInbox);
         msgs = new ArrayList<Message>();
-
-        pbInbox.setVisibility(View.VISIBLE);
-        pbInbox.setIndeterminate(true);
-        rlInbox.setVisibility(View.INVISIBLE);
 
         db = FirebaseFirestore.getInstance();
 
@@ -76,8 +65,6 @@ public class MessageFragment extends Fragment {
                             Message m = d.toObject(Message.class);
                             msgs.add(m);
                         }
-
-                        Collections.sort(msgs);
 
                         MessageAdapter adapter = new MessageAdapter(getActivity(), msgs);
 
@@ -96,20 +83,8 @@ public class MessageFragment extends Fragment {
                                         .commit();
                             }
                         });
-
-                        Toast.makeText(getActivity(), "Messages are loaded", Toast.LENGTH_LONG).show();
-
-                        rlInbox.setVisibility(View.VISIBLE);
-                        pbInbox.setVisibility(View.GONE);
                     }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
-                rlInbox.setVisibility(View.VISIBLE);
-                pbInbox.setVisibility(View.GONE);
-            }
-        });
+                });
     }
 
     private void loadButton(){

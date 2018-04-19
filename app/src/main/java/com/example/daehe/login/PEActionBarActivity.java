@@ -1,9 +1,6 @@
 package com.example.daehe.login;
 
-import android.app.AlertDialog;
 import android.app.FragmentManager;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -18,14 +15,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.login.LoginManager;
-import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInApi;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
@@ -34,7 +25,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class PEActionBarActivity extends AppCompatActivity
@@ -173,6 +163,9 @@ public class PEActionBarActivity extends AppCompatActivity
                 }
 
                 break;
+            case R.id.nav_other:
+                Toast.makeText(this, "This is other", Toast.LENGTH_SHORT).show();
+                break;
             case R.id.nav_message:
                 Toast.makeText(this, "This is message", Toast.LENGTH_SHORT).show();
 
@@ -206,35 +199,6 @@ public class PEActionBarActivity extends AppCompatActivity
                             .commit();
                 }
                 break;
-            case R.id.nav_signOut:
-                Toast.makeText(this, "Sign out", Toast.LENGTH_SHORT).show();
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setMessage("Are you sure you want to logout?");
-
-                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        //perform any action
-                        LoginActivity la = new LoginActivity();
-                        la.LogOut();
-                        startActivity(la.getIntent());
-                        //Intent i = new Intent(PEActionBarActivity.this, LoginActivity.class);
-                        //startActivity(i);
-                        Toast.makeText(getApplicationContext(), "Yes clicked", Toast.LENGTH_SHORT).show();
-                    }
-                });
-
-                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        //perform any action
-                        Toast.makeText(getApplicationContext(), "No clicked", Toast.LENGTH_SHORT).show();
-                    }
-                });
-
-                //creating alert dialog
-                AlertDialog alertDialog = builder.create();
-                alertDialog.show();
             default:
                 return false;
         }
@@ -286,8 +250,6 @@ public class PEActionBarActivity extends AppCompatActivity
                                 // document.
                                 List<Event> types = documentSnapshots.toObjects(Event.class);
                                 // Add all to your list
-                                Collections.sort(types);
-
                                 events.addAll(types);
 
                                 Log.d(TAG, "onSuccess: " + events);
@@ -327,8 +289,6 @@ public class PEActionBarActivity extends AppCompatActivity
                                 // document.
                                 List<Event> types = documentSnapshots.toObjects(Event.class);
                                 // Add all to your list
-                                Collections.sort(types);
-
                                 events.addAll(types);
 
                                 Log.d(TAG, "onSuccess: " + events);
@@ -363,8 +323,6 @@ public class PEActionBarActivity extends AppCompatActivity
                             // document.
                             List<Event> types = documentSnapshots.toObjects(Event.class);
                             // Add all to your list
-                            Collections.sort(types);
-
                             allEvents.addAll(types);
 
                             Log.d(TAG, "onSuccess: " + events);
