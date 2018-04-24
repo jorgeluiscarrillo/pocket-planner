@@ -114,6 +114,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     }
 
     private void init() {
+        mGoogleApiClient = null;
         mGoogleApiClient = new GoogleApiClient
                 .Builder(mContext)
                 .addApi(Places.GEO_DATA_API)

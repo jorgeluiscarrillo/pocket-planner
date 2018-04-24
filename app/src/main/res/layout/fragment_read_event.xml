@@ -64,6 +64,12 @@
             android:layout_height="wrap_content"
             android:hint="Owner"/>
 
+        <TextView
+            android:id="@+id/re_eventCode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Code"/>
+
         <View style="@style/Divider"></View>
 
         <TextView

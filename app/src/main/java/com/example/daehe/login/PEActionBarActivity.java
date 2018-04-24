@@ -41,9 +41,10 @@ public class PEActionBarActivity extends AppCompatActivity
     private User user;
     private ArrayList<Event> events = new ArrayList<Event>();
     private ArrayList<String> ids = new ArrayList<String>();
-    private ArrayList<Event> allEvents = new ArrayList<> ();
+    private ArrayList<Event> allEvents = new ArrayList<Event> ();
     private boolean googleSignIn;
     private boolean facebookSignIn;
+    ViewEventFragment view;
     private FirebaseFirestore db;
     private ListenerRegistration listenerRegistration;
     private ListenerRegistration allEventRegistration;
@@ -127,7 +128,6 @@ public class PEActionBarActivity extends AppCompatActivity
 
         getEventsFromDB();
         GetAllEventsDB();
-        Toast.makeText(this, UUID.randomUUID().toString().substring(0,4), Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -161,12 +161,19 @@ public class PEActionBarActivity extends AppCompatActivity
                 EventFragment ef = (EventFragment) getSupportFragmentManager().findFragmentByTag("CreateEvent");
                 if(!(mf != null && mf.isVisible()))
                 {
+                    for(int i = 1; i < getSupportFragmentManager().getBackStackEntryCount(); ++i) {
+                        getSupportFragmentManager().popBackStack();
+                    }
                     getSupportFragmentManager().beginTransaction( )
                             .replace(R.id.contentframe, new EventFragment(), "Event")
                             .commit();
                 }
                 else
                 {
+                    for(int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); ++i) {
+                        getSupportFragmentManager().popBackStack();
+                    }
+
                     getSupportFragmentManager().beginTransaction( )
                             .replace(R.id.contentframe, new EventFragment(), "Event")
                             .addToBackStack(null)
@@ -174,20 +181,23 @@ public class PEActionBarActivity extends AppCompatActivity
                 }
 
                 break;
-            case R.id.nav_other:
-                Toast.makeText(this, "This is other", Toast.LENGTH_SHORT).show();
-                break;
             case R.id.nav_message:
                 Toast.makeText(this, "This is message", Toast.LENGTH_SHORT).show();
 
                 if(!(mf != null && mf.isVisible()))
                 {
+                    for(int i = 1; i < getSupportFragmentManager().getBackStackEntryCount(); ++i) {
+                        getSupportFragmentManager().popBackStack();
+                    }
                     getSupportFragmentManager().beginTransaction( )
                             .replace(R.id.contentframe, new MessageFragment(), "Message")
                             .commit();
                 }
                 else
                 {
+                    for(int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); i++) {
+                        getSupportFragmentManager().popBackStack();
+                    }
                     getSupportFragmentManager().beginTransaction( )
                             .replace(R.id.contentframe, new MessageFragment(), "Message")
                             .addToBackStack(null)
@@ -195,17 +205,45 @@ public class PEActionBarActivity extends AppCompatActivity
                 }
                 break;
             case R.id.nav_viewEvent:
+                view = new ViewEventFragment();
                 Toast.makeText(this,"Viewing events", Toast.LENGTH_SHORT).show();
                 if(!(mf != null && mf.isVisible()))
                 {
+                    for(int i = 1; i < getSupportFragmentManager().getBackStackEntryCount(); ++i) {
+                        getSupportFragmentManager().popBackStack();
+                    }
                     getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.contentframe, new ViewEventFragment(), "View Event")
+                            .replace(R.id.contentframe, view, "View Event")
                             .commit();
                 }
                 else
                 {
+                    for(int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); i++) {
+                        getSupportFragmentManager().popBackStack();
+                    }
                     getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.contentframe, new ViewEventFragment(), "View Event")
+                            .replace(R.id.contentframe, view, "View Event")
+                            .addToBackStack(null)
+                            .commit();
+                }
+                break;
+            case R.id.nav_findEvent:
+                if(!(mf != null && mf.isVisible()))
+                {
+                    for(int i = 1; i < getSupportFragmentManager().getBackStackEntryCount(); ++i) {
+                        getSupportFragmentManager().popBackStack();
+                    }
+                    getSupportFragmentManager().beginTransaction( )
+                            .replace(R.id.contentframe, new JoinEventFragment(), "Join Event")
+                            .commit();
+                }
+                else
+                {
+                    for(int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); i++) {
+                        getSupportFragmentManager().popBackStack();
+                    }
+                    getSupportFragmentManager().beginTransaction( )
+                            .replace(R.id.contentframe, new JoinEventFragment(), "Join Event")
                             .addToBackStack(null)
                             .commit();
                 }
@@ -243,6 +281,7 @@ public class PEActionBarActivity extends AppCompatActivity
                     .addSnapshotListener(new EventListener<QuerySnapshot>() {
                         @Override
                         public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
+                            events.clear();
                             for(DocumentSnapshot document : documentSnapshots.getDocuments())
                             {
                                 ids.add(document.getId());
@@ -292,9 +331,10 @@ public class PEActionBarActivity extends AppCompatActivity
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
+                        allEvents.clear();
                         List<Event> types = documentSnapshots.toObjects(Event.class);
                         // Add all to your list
-                        events.addAll(types);
+                        allEvents.addAll(types);
 
                         Log.d(TAG, "onSuccess: " + events);
                     }
@@ -343,4 +383,6 @@ public class PEActionBarActivity extends AppCompatActivity
     {
         return facebookSignIn;
     }
+
+    public ViewEventFragment getView() { return view; }
 }

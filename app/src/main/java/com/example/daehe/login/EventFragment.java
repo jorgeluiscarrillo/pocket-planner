@@ -51,6 +51,7 @@ import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import java.util.UUID;
 
 import static android.app.Activity.RESULT_OK;
 import static android.content.ContentValues.TAG;
@@ -122,9 +123,11 @@ public class EventFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                new DatePickerDialog(getContext(), datePick, myCalendar
+                DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(), datePick, myCalendar
                         .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                        myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+                        myCalendar.get(Calendar.DAY_OF_MONTH));
+                datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis()-1000);
+                datePickerDialog.show();
             }
         });
 
@@ -201,6 +204,21 @@ public class EventFragment extends Fragment {
                 eventDate = date.getText().toString();
                 eventTime = startTime.getText().toString();
 
+                boolean duplicate = false;
+                String newKey = "";
+
+                do{
+                    newKey = UUID.randomUUID().toString().substring(0,4);
+
+                    for(int i = 0; i < activity.GetAllEvents().size(); i++)
+                    {
+                        if(newKey.equals(activity.GetAllEvents().get(i).getKey()))
+                        {
+                            duplicate = true;
+                        }
+                    }
+                }while(duplicate);
+
                 if(isEmpty(name))
                 {
                     name.setError("Name cannot be empty");
@@ -250,7 +268,7 @@ public class EventFragment extends Fragment {
                     if(activity.GetGoogleSignIn())
                     {
                         GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(getContext());
-                        Event e = new Event(eventName,eventLoc,inputDate,eventDescription,acct.getDisplayName(), Calendar.getInstance().getTime(), false, lat);
+                        Event e = new Event(eventName,eventLoc,inputDate,eventDescription,acct.getDisplayName(), Calendar.getInstance().getTime(), false, lat, newKey, false, new ArrayList<User>());
 
                         DocumentReference doc = db.collection("All Events")
                                 .document();
@@ -264,15 +282,11 @@ public class EventFragment extends Fragment {
                                 .collection("Events")
                                 .document(doc.getId())
                                 .set(e);
-
-                        activity.AddEvents(e);
-                        activity.GetAllEvents().add(e);
-                        activity.AddId(doc.getId());
                     }
 
                     if(activity.GetFacebookSignIn())
                     {
-                        Event e = new Event(eventName,eventLoc,inputDate,eventDescription,LoginActivity.GetDisplayName(), Calendar.getInstance().getTime(), false, lat);
+                        Event e = new Event(eventName,eventLoc,inputDate,eventDescription,LoginActivity.GetDisplayName(), Calendar.getInstance().getTime(), false, lat, newKey, false, new ArrayList<User>());
 
                         DocumentReference doc = db.collection("All Events")
                                 .document();
@@ -286,9 +300,6 @@ public class EventFragment extends Fragment {
                                 .collection("Events")
                                 .document(doc.getId())
                                 .set(e);
-
-                        activity.AddEvents(e);
-                        activity.AddId(doc.getId());
                     }
 
                     FragmentManager fm = getFragmentManager();
