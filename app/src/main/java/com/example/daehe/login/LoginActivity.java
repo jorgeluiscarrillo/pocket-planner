@@ -65,6 +65,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private LoginButton btnFBLogin;
     private CallbackManager cbmFacebook;
     private static String email;
+    private boolean loggedIn = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -149,14 +150,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 }
             }
 
-        });
-
-        detour.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
-                startActivity(mainIntent);
-            }
         });
 
         if(isGooglePlayServicesInstalled()) {
