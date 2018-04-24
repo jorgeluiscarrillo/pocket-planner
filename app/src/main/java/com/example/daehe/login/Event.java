@@ -2,6 +2,7 @@ package com.example.daehe.login;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -18,10 +19,13 @@ public class Event {
     private Date timeMade;
     private Boolean isPrivate;
     private String lat;
+    private String key;
+    private Boolean favorite;
+    private ArrayList<User> attendants;
 
     public Event() {}
 
-    public Event(String n, String l, Date d, String des, String o, Date ct, Boolean p, String lt) {
+    public Event(String n, String l, Date d, String des, String o, Date ct, Boolean p, String lt, String k, Boolean fav, ArrayList<User> a) {
         name = n;
         location = l;
         date = d;
@@ -30,6 +34,9 @@ public class Event {
         timeMade = ct;
         isPrivate = p;
         lat = lt;
+        key = k;
+        favorite = fav;
+        attendants = a;
     }
 
     public String getName() {
@@ -56,6 +63,21 @@ public class Event {
 
     public Boolean getIsPrivate() {return isPrivate;}
 
+    public String getKey()
+    {
+        return key;
+    }
+
+    public Boolean getFavorite()
+    {
+        return favorite;
+    }
+
+    public ArrayList<User> getAttendants()
+    {
+        return attendants;
+    }
+
     public String getLat() {return lat;}
 
     public void setDate(Date date) {
@@ -79,4 +101,19 @@ public class Event {
     }
 
     public void setLat(String lt) {lat=lt;}
+
+    public void setKey(String k)
+    {
+        key = k;
+    }
+
+    public void setFavorite(Boolean fav) {
+        favorite = fav;
+    }
+
+    public void setAttendants(ArrayList<User> a)
+    {
+        attendants = a;
+    }
+
 }

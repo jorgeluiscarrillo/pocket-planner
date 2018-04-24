@@ -138,9 +138,11 @@ public class UpdateFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                new DatePickerDialog(c, datePick, myCalendar
+                DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(), datePick, myCalendar
                         .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                        myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+                        myCalendar.get(Calendar.DAY_OF_MONTH));
+                datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis()-1000);
+                datePickerDialog.show();
             }
         });
 
@@ -251,7 +253,7 @@ public class UpdateFragment extends Fragment {
 
                     int pos = activity.GetEvents().indexOf(updatedEvent);
 
-                    if(LoginActivity.mGoogleApiClient != null)
+                    if(activity.GetGoogleSignIn())
                     {
                         GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(getContext());
                         db.collection("Events")
@@ -265,11 +267,15 @@ public class UpdateFragment extends Fragment {
                                 .set(updatedEvent);
                     }
 
-                    if(LoginActivity.isLoggedInFB())
+                    if(activity.GetFacebookSignIn())
                     {
                         db.collection("Events")
                                 .document(LoginActivity.GetFacebookID())
                                 .collection("Events")
+                                .document(activity.GetEventIds().get(pos))
+                                .set(updatedEvent);
+
+                        db.collection("All Events")
                                 .document(activity.GetEventIds().get(pos))
                                 .set(updatedEvent);
                     }

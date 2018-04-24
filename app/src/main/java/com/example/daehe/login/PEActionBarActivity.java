@@ -4,6 +4,7 @@ import android.app.FragmentManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -21,11 +22,15 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class PEActionBarActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -36,10 +41,13 @@ public class PEActionBarActivity extends AppCompatActivity
     private User user;
     private ArrayList<Event> events = new ArrayList<Event>();
     private ArrayList<String> ids = new ArrayList<String>();
-    private ArrayList<Event> allEvents = new ArrayList<> ();
+    private ArrayList<Event> allEvents = new ArrayList<Event> ();
     private boolean googleSignIn;
     private boolean facebookSignIn;
+    ViewEventFragment view;
     private FirebaseFirestore db;
+    private ListenerRegistration listenerRegistration;
+    private ListenerRegistration allEventRegistration;
     public User getUser(){
         return user;
     }
@@ -53,8 +61,7 @@ public class PEActionBarActivity extends AppCompatActivity
     protected void setMenuBar(int layout){
         setContentView(layout);
         db = FirebaseFirestore.getInstance();
-        getEventsFromDB();
-        GetAllEventsDB();
+
         googleSignIn = false;
         facebookSignIn = false;
 
@@ -78,7 +85,7 @@ public class PEActionBarActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         mToggle.syncState();
 
-        if(LoginActivity.mGoogleApiClient != null)
+        if(LoginActivity.mGoogleApiClient != null )
         {
             googleSignIn = true;
             facebookSignIn = false;
@@ -114,9 +121,13 @@ public class PEActionBarActivity extends AppCompatActivity
 
         DocumentReference doc = db.collection("Users").document();
 
+
         db.collection("Users")
                 .document(user.getID())
                 .set(user);
+
+        getEventsFromDB();
+        GetAllEventsDB();
     }
 
     @Override
@@ -150,12 +161,19 @@ public class PEActionBarActivity extends AppCompatActivity
                 EventFragment ef = (EventFragment) getSupportFragmentManager().findFragmentByTag("CreateEvent");
                 if(!(mf != null && mf.isVisible()))
                 {
+                    for(int i = 1; i < getSupportFragmentManager().getBackStackEntryCount(); ++i) {
+                        getSupportFragmentManager().popBackStack();
+                    }
                     getSupportFragmentManager().beginTransaction( )
                             .replace(R.id.contentframe, new EventFragment(), "Event")
                             .commit();
                 }
                 else
                 {
+                    for(int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); ++i) {
+                        getSupportFragmentManager().popBackStack();
+                    }
+
                     getSupportFragmentManager().beginTransaction( )
                             .replace(R.id.contentframe, new EventFragment(), "Event")
                             .addToBackStack(null)
@@ -163,20 +181,23 @@ public class PEActionBarActivity extends AppCompatActivity
                 }
 
                 break;
-            case R.id.nav_other:
-                Toast.makeText(this, "This is other", Toast.LENGTH_SHORT).show();
-                break;
             case R.id.nav_message:
                 Toast.makeText(this, "This is message", Toast.LENGTH_SHORT).show();
 
                 if(!(mf != null && mf.isVisible()))
                 {
+                    for(int i = 1; i < getSupportFragmentManager().getBackStackEntryCount(); ++i) {
+                        getSupportFragmentManager().popBackStack();
+                    }
                     getSupportFragmentManager().beginTransaction( )
                             .replace(R.id.contentframe, new MessageFragment(), "Message")
                             .commit();
                 }
                 else
                 {
+                    for(int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); i++) {
+                        getSupportFragmentManager().popBackStack();
+                    }
                     getSupportFragmentManager().beginTransaction( )
                             .replace(R.id.contentframe, new MessageFragment(), "Message")
                             .addToBackStack(null)
@@ -184,17 +205,45 @@ public class PEActionBarActivity extends AppCompatActivity
                 }
                 break;
             case R.id.nav_viewEvent:
+                view = new ViewEventFragment();
                 Toast.makeText(this,"Viewing events", Toast.LENGTH_SHORT).show();
                 if(!(mf != null && mf.isVisible()))
                 {
+                    for(int i = 1; i < getSupportFragmentManager().getBackStackEntryCount(); ++i) {
+                        getSupportFragmentManager().popBackStack();
+                    }
                     getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.contentframe, new ViewEventFragment(), "View Event")
+                            .replace(R.id.contentframe, view, "View Event")
                             .commit();
                 }
                 else
                 {
+                    for(int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); i++) {
+                        getSupportFragmentManager().popBackStack();
+                    }
                     getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.contentframe, new ViewEventFragment(), "View Event")
+                            .replace(R.id.contentframe, view, "View Event")
+                            .addToBackStack(null)
+                            .commit();
+                }
+                break;
+            case R.id.nav_findEvent:
+                if(!(mf != null && mf.isVisible()))
+                {
+                    for(int i = 1; i < getSupportFragmentManager().getBackStackEntryCount(); ++i) {
+                        getSupportFragmentManager().popBackStack();
+                    }
+                    getSupportFragmentManager().beginTransaction( )
+                            .replace(R.id.contentframe, new JoinEventFragment(), "Join Event")
+                            .commit();
+                }
+                else
+                {
+                    for(int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); i++) {
+                        getSupportFragmentManager().popBackStack();
+                    }
+                    getSupportFragmentManager().beginTransaction( )
+                            .replace(R.id.contentframe, new JoinEventFragment(), "Join Event")
                             .addToBackStack(null)
                             .commit();
                 }
@@ -215,9 +264,8 @@ public class PEActionBarActivity extends AppCompatActivity
         }
         else
         {
-            db.collection("Users")
-                    .document(user.getID())
-                    .set(user);
+            listenerRegistration.remove();
+            allEventRegistration.remove();
             super.onBackPressed();
         }
     }
@@ -227,78 +275,51 @@ public class PEActionBarActivity extends AppCompatActivity
         if(googleSignIn)
         {
             GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
-            db.collection("Events")
+            listenerRegistration = db.collection("Events")
                     .document(acct.getId())
                     .collection("Events")
-                    .get()
-                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    .addSnapshotListener(new EventListener<QuerySnapshot>() {
                         @Override
-                        public void onSuccess(QuerySnapshot documentSnapshots) {
-                            if(documentSnapshots.isEmpty())
+                        public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
+                            events.clear();
+                            for(DocumentSnapshot document : documentSnapshots.getDocuments())
                             {
-                                Log.d(TAG,"onSuccess: LIST EMPTY");
+                                ids.add(document.getId());
                             }
-                            else
-                            {
-                                for(DocumentSnapshot document : documentSnapshots.getDocuments())
-                                {
-                                    ids.add(document.getId());
-                                }
-                                //Toast.makeText(getApplicationContext(),"ID: " + ids.get(0), Toast.LENGTH_SHORT).show();
-                                // Convert the whole Query Snapshot to a list
-                                // of objects directly! No need to fetch each
-                                // document.
-                                List<Event> types = documentSnapshots.toObjects(Event.class);
-                                // Add all to your list
-                                events.addAll(types);
+                            //Toast.makeText(getApplicationContext(),"ID: " + ids.get(0), Toast.LENGTH_SHORT).show();
+                            // Convert the whole Query Snapshot to a list
+                            // of objects directly! No need to fetch each
+                            // document.
+                            List<Event> types = documentSnapshots.toObjects(Event.class);
+                            // Add all to your list
+                            events.addAll(types);
 
-                                Log.d(TAG, "onSuccess: " + events);
-                            }
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-
+                            Log.d(TAG, "onSuccess: " + events);
                         }
                     });
         }
 
         if(facebookSignIn)
         {
-            db.collection("Events")
+            listenerRegistration = db.collection("Events")
                     .document(LoginActivity.GetFacebookID())
                     .collection("Events")
-                    .get()
-                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    .addSnapshotListener(new EventListener<QuerySnapshot>() {
                         @Override
-                        public void onSuccess(QuerySnapshot documentSnapshots) {
-                            if(documentSnapshots.isEmpty())
+                        public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
+                            for(DocumentSnapshot document : documentSnapshots.getDocuments())
                             {
-                                Log.d(TAG,"onSuccess: LIST EMPTY");
+                                ids.add(document.getId());
                             }
-                            else
-                            {
-                                for(DocumentSnapshot document : documentSnapshots.getDocuments())
-                                {
-                                    ids.add(document.getId());
-                                }
-                                //Toast.makeText(getApplicationContext(),"ID: " + ids.get(0), Toast.LENGTH_SHORT).show();
-                                // Convert the whole Query Snapshot to a list
-                                // of objects directly! No need to fetch each
-                                // document.
-                                List<Event> types = documentSnapshots.toObjects(Event.class);
-                                // Add all to your list
-                                events.addAll(types);
+                            //Toast.makeText(getApplicationContext(),"ID: " + ids.get(0), Toast.LENGTH_SHORT).show();
+                            // Convert the whole Query Snapshot to a list
+                            // of objects directly! No need to fetch each
+                            // document.
+                            List<Event> types = documentSnapshots.toObjects(Event.class);
+                            // Add all to your list
+                            events.addAll(types);
 
-                                Log.d(TAG, "onSuccess: " + events);
-                            }
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-
+                            Log.d(TAG, "onSuccess: " + events);
                         }
                     });
         }
@@ -306,33 +327,16 @@ public class PEActionBarActivity extends AppCompatActivity
 
     private void GetAllEventsDB()
     {
-        db.collection("All Events")
-                .get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+        allEventRegistration = db.collection("All Events")
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
-                    public void onSuccess(QuerySnapshot documentSnapshots) {
-                        if(documentSnapshots.isEmpty())
-                        {
-                            Log.d(TAG,"onSuccess: LIST EMPTY");
-                        }
-                        else
-                        {
-                            //Toast.makeText(getApplicationContext(),"ID: " + ids.get(0), Toast.LENGTH_SHORT).show();
-                            // Convert the whole Query Snapshot to a list
-                            // of objects directly! No need to fetch each
-                            // document.
-                            List<Event> types = documentSnapshots.toObjects(Event.class);
-                            // Add all to your list
-                            allEvents.addAll(types);
+                    public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
+                        allEvents.clear();
+                        List<Event> types = documentSnapshots.toObjects(Event.class);
+                        // Add all to your list
+                        allEvents.addAll(types);
 
-                            Log.d(TAG, "onSuccess: " + events);
-                        }
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-
+                        Log.d(TAG, "onSuccess: " + events);
                     }
                 });
     }
@@ -379,4 +383,6 @@ public class PEActionBarActivity extends AppCompatActivity
     {
         return facebookSignIn;
     }
+
+    public ViewEventFragment getView() { return view; }
 }
