@@ -54,7 +54,6 @@ public class PEActionBarActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
-
         super.onCreate(savedInstanceState);
     }
 
@@ -307,6 +306,7 @@ public class PEActionBarActivity extends AppCompatActivity
                     .addSnapshotListener(new EventListener<QuerySnapshot>() {
                         @Override
                         public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
+                            events.clear();
                             for(DocumentSnapshot document : documentSnapshots.getDocuments())
                             {
                                 ids.add(document.getId());
@@ -385,4 +385,6 @@ public class PEActionBarActivity extends AppCompatActivity
     }
 
     public ViewEventFragment getView() { return view; }
+
+    public String getGoogleId() { return GoogleSignIn.getLastSignedInAccount(this).getId(); }
 }
