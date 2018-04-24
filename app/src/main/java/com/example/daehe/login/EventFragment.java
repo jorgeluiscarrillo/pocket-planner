@@ -303,7 +303,10 @@ public class EventFragment extends Fragment {
                     }
 
                     FragmentManager fm = getFragmentManager();
-                    fm.popBackStack();
+                    name.setText("");
+                    location.setText("");
+                    date.setText("");
+                    startTime.setText("");
                     Toast.makeText(getContext(), "Event successfully created!", Toast.LENGTH_SHORT).show();
                 }
             }

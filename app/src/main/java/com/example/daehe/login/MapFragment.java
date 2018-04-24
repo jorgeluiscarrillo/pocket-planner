@@ -332,4 +332,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
             mGoogleApiClient.disconnect();
         }
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(mMap != null)
+        {
+            mMap.clear();
+            loadMarkers();
+        }
+    }
 }
