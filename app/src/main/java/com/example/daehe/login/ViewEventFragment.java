@@ -71,4 +71,9 @@ public class ViewEventFragment extends Fragment {
         eventRecycler.setAdapter(adapter);
     }
 
+    public void notifyData()
+    {
+        adapter.notifyDataSetChanged();
+    }
+
 }
