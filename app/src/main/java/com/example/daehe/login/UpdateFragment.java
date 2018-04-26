@@ -246,12 +246,11 @@ public class UpdateFragment extends Fragment {
                     {
 
                     }
+                    int pos = activity.GetEvents().indexOf(updatedEvent);
                     updatedEvent.setName(eventName);
                     updatedEvent.setLocation(eventLoc);
                     updatedEvent.setDate(inputDate);
                     updatedEvent.setDescription(eventDescription);
-
-                    int pos = activity.GetEvents().indexOf(updatedEvent);
 
                     if(activity.GetGoogleSignIn())
                     {

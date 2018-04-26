@@ -14,8 +14,10 @@ import java.util.ArrayList;
  */
 
 public class MessageAdapter extends ArrayAdapter<Message> {
+    private Context mContext;
     public MessageAdapter(Context context, ArrayList<Message> msgs){
         super(context, 0, msgs);
+        mContext = context;
     }
 
     @Override
@@ -24,7 +26,7 @@ public class MessageAdapter extends ArrayAdapter<Message> {
         Message msg = getItem(position);
         // Check if an existing view is being reused, otherwise inflate the view
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.inbox_layout, parent, false);
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.inbox_layout, parent, false);
         }
         // Lookup view for data population
         TextView tvSender = (TextView) convertView.findViewById(R.id.tvSender);

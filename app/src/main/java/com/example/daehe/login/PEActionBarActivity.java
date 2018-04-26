@@ -49,6 +49,7 @@ public class PEActionBarActivity extends AppCompatActivity
     private User user;
     private ArrayList<Event> events = new ArrayList<Event>();
     private ArrayList<String> ids = new ArrayList<String>();
+    private ArrayList<String> idsAll = new ArrayList<>();
     private ArrayList<Event> allEvents = new ArrayList<Event> ();
     private boolean googleSignIn;
     private boolean facebookSignIn;
@@ -63,7 +64,6 @@ public class PEActionBarActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
-
         super.onCreate(savedInstanceState);
     }
 
@@ -135,8 +135,8 @@ public class PEActionBarActivity extends AppCompatActivity
                 .document(user.getID())
                 .set(user);
 
-        getEventsFromDB();
         GetAllEventsDB();
+        getEventsFromDB();
     }
 
     @Override
@@ -203,6 +203,7 @@ public class PEActionBarActivity extends AppCompatActivity
 
                 break;
             case R.id.nav_message:
+                MessageFragment mesf = new MessageFragment();
                 Toast.makeText(this, "This is message", Toast.LENGTH_SHORT).show();
 
                 if(!(mf != null && mf.isVisible()))
@@ -211,7 +212,7 @@ public class PEActionBarActivity extends AppCompatActivity
                         getSupportFragmentManager().popBackStack();
                     }
                     getSupportFragmentManager().beginTransaction( )
-                            .replace(R.id.contentframe, new MessageFragment(), "Message")
+                            .replace(R.id.contentframe, mesf, "Message")
                             .commit();
                 }
                 else
@@ -220,7 +221,7 @@ public class PEActionBarActivity extends AppCompatActivity
                         getSupportFragmentManager().popBackStack();
                     }
                     getSupportFragmentManager().beginTransaction( )
-                            .replace(R.id.contentframe, new MessageFragment(), "Message")
+                            .replace(R.id.contentframe, mesf, "Message")
                             .addToBackStack(null)
                             .commit();
                 }
@@ -338,6 +339,7 @@ public class PEActionBarActivity extends AppCompatActivity
                         @Override
                         public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
                             events.clear();
+                            ids.clear();
                             for(DocumentSnapshot document : documentSnapshots.getDocuments())
                             {
                                 ids.add(document.getId());
@@ -363,6 +365,8 @@ public class PEActionBarActivity extends AppCompatActivity
                     .addSnapshotListener(new EventListener<QuerySnapshot>() {
                         @Override
                         public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
+                            events.clear();
+                            ids.clear();
                             for(DocumentSnapshot document : documentSnapshots.getDocuments())
                             {
                                 ids.add(document.getId());
@@ -388,7 +392,12 @@ public class PEActionBarActivity extends AppCompatActivity
                     @Override
                     public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
                         allEvents.clear();
+                        idsAll.clear();
                         List<Event> types = documentSnapshots.toObjects(Event.class);
+                        for(DocumentSnapshot document : documentSnapshots.getDocuments())
+                        {
+                            idsAll.add(document.getId());
+                        }
                         // Add all to your list
                         allEvents.addAll(types);
 
@@ -441,4 +450,8 @@ public class PEActionBarActivity extends AppCompatActivity
     }
 
     public ViewEventFragment getView() { return view; }
+
+    public String getGoogleId() { return GoogleSignIn.getLastSignedInAccount(this).getId(); }
+
+    public ArrayList<String> GetAllEventIds() { return idsAll; }
 }
