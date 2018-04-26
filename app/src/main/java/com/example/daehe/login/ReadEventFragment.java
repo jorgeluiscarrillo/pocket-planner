@@ -76,7 +76,7 @@ public class ReadEventFragment extends Fragment {
             eventCode.setText("Join Code: " + event.getKey());
         }
 
-        if(event.getOwner().equals(activity.getUser()))
+        if(event.getOwner().equals(activity.getUser().getName()))
         {
             bUpdate.setVisibility(View.GONE);
             bDelete.setVisibility(View.GONE);
@@ -228,7 +228,7 @@ public class ReadEventFragment extends Fragment {
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                int pos = activity.GetEvents().indexOf(event);
+                                int pos = activity.GetEventByCode(event.getKey());
 
                                 if(activity.GetGoogleSignIn())
                                 {
@@ -236,7 +236,7 @@ public class ReadEventFragment extends Fragment {
                                     db.collection("Events")
                                             .document(acct.getId())
                                             .collection("Events")
-                                            .document(activity.GetEventIds().get(pos))
+                                            .document(activity.GetAllEventIds().get(pos))
                                             .delete()
                                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
@@ -257,7 +257,7 @@ public class ReadEventFragment extends Fragment {
                                     db.collection("Events")
                                             .document(LoginActivity.GetFacebookID())
                                             .collection("Events")
-                                            .document(activity.GetEventIds().get(pos))
+                                            .document(activity.GetAllEventIds().get(pos))
                                             .delete()
                                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
@@ -273,7 +273,7 @@ public class ReadEventFragment extends Fragment {
                                             });
                                 }
                                 db.collection("All Events")
-                                        .document(activity.GetEventIds().get(pos))
+                                        .document(activity.GetAllEventIds().get(pos))
                                         .delete()
                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
