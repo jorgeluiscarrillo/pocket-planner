@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@drawable/background"
     android:weightSum="4">
 
     <LinearLayout
@@ -15,11 +16,11 @@
 
         <ImageView
             android:id="@+id/pocket_event_logo_image"
-            android:layout_width="300dp"
+            android:layout_width="match_parent"
             android:layout_height="150dp"
             android:layout_marginBottom="10dp"
             android:layout_marginTop="@dimen/g_top_margin"
-            android:src="@drawable/eventplanning"/>
+            android:src="@drawable/pocket_planner"/>
 
     </LinearLayout>
 
