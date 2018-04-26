@@ -76,7 +76,7 @@ public class ReadEventFragment extends Fragment {
             eventCode.setText("Join Code: " + event.getKey());
         }
 
-        if(event.getAttendants().size() != 0)
+        if(event.getOwner().equals(activity.getUser()))
         {
             bUpdate.setVisibility(View.GONE);
             bDelete.setVisibility(View.GONE);
