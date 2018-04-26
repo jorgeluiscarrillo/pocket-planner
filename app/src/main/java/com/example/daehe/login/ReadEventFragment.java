@@ -40,6 +40,8 @@ public class ReadEventFragment extends Fragment {
     TextView eventCode;
     Button bUpdate;
     Button bDelete;
+    Button bView;
+    Button bStop;
     FirebaseFirestore db;
 
     @Nullable
@@ -57,6 +59,9 @@ public class ReadEventFragment extends Fragment {
 
         bUpdate = (Button) myView.findViewById(R.id.update_event);
         bDelete = (Button) myView.findViewById(R.id.delete_event);
+        bView = (Button) myView.findViewById(R.id.view_attendants);
+        bStop = (Button) myView.findViewById(R.id.stop_attending);
+
 
         DateFormat dateFormat = new SimpleDateFormat("EEEE MMMM dd, yyyy hh:mm aa zzz ");
         db = FirebaseFirestore.getInstance();
@@ -70,6 +75,134 @@ public class ReadEventFragment extends Fragment {
             eventDesc.setText(event.getDescription());
             eventCode.setText("Join Code: " + event.getKey());
         }
+
+        if(event.getAttendants().size() != 0)
+        {
+            bUpdate.setVisibility(View.GONE);
+            bDelete.setVisibility(View.GONE);
+            bStop.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            bStop.setVisibility(View.GONE);
+        }
+
+        bView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                StringBuilder sb = new StringBuilder();
+                AlertDialog alert = new AlertDialog.Builder(getContext()).create();
+                alert.setTitle("Viewing attendants");
+
+                if(event.getAttendants().size() == 0)
+                {
+                    sb.append("No attendees going to this event");
+                }
+                else
+                {
+                    for(int i = 0; i < event.getAttendants().size(); i++)
+                    {
+                        if(i != event.getAttendants().size() - 1)
+                        {
+                            sb.append(event.getAttendants().get(i).getName() + "\n");
+                        }
+                        else
+                        {
+                            sb.append(event.getAttendants().get(i).getName());
+                        }
+                    }
+                }
+
+                alert.setMessage(sb);
+                alert.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                            }
+                        });
+                alert.show();
+            }
+        });
+
+        bStop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setCancelable(true);
+                builder.setTitle("Stop attending this event");
+                builder.setMessage("Are you sure you want to stop attending this event?");
+                builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int which) {
+                        for(int i = 0; i < event.getAttendants().size(); i++)
+                        {
+                            if(event.getAttendants().get(i).getID().equals(activity.getUser().getID()))
+                            {
+                                event.getAttendants().remove(i);
+                            }
+                        }
+                        int pos = activity.GetEvents().indexOf(event);
+
+                        if(activity.GetGoogleSignIn())
+                        {
+                            GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(getContext());
+                            db.collection("Events")
+                                    .document(acct.getId())
+                                    .collection("Events")
+                                    .document(activity.GetEventIds().get(pos))
+                                    .delete()
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            //Toast.makeText(getContext(),"Event deleted!", Toast.LENGTH_SHORT).show();
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            //Toast.makeText(getContext(),"Event could not be deleted", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                        }
+
+                        if(activity.GetFacebookSignIn())
+                        {
+                            db.collection("Events")
+                                    .document(LoginActivity.GetFacebookID())
+                                    .collection("Events")
+                                    .document(activity.GetEventIds().get(pos))
+                                    .delete()
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            //Toast.makeText(getContext(),"Event deleted!", Toast.LENGTH_SHORT).show();
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            //Toast.makeText(getContext(),"Event could not be deleted", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                        }
+                        db.collection("All Events")
+                                .document(activity.GetEventIds().get(pos))
+                                .set(event);
+                        FragmentManager fm = getFragmentManager();
+                        activity.getView().notifyData();
+                        fm.popBackStack();
+                    }
+                });
+                builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            }
+        });
 
         bUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -96,7 +229,6 @@ public class ReadEventFragment extends Fragment {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 int pos = activity.GetEvents().indexOf(event);
-
 
                                 if(activity.GetGoogleSignIn())
                                 {
@@ -158,7 +290,6 @@ public class ReadEventFragment extends Fragment {
                                 FragmentManager fm = getFragmentManager();
                                 activity.getView().notifyData();
                                 fm.popBackStack();
-
                             }
                         });
                 builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {

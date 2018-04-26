@@ -13,9 +13,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.w3c.dom.Text;
+
+import java.util.ArrayList;
+import java.util.Calendar;
 
 /**
  * Created by Bryan on 4/22/2018.
@@ -149,7 +155,45 @@ public class JoinEventFragment extends Fragment {
                 }
                 if(!found)
                 {
+                    for(int i = 0; i < activity.GetAllEvents().size(); i++)
+                    {
+                        if(selectedEvent.getKey().equals(activity.GetAllEvents().get(i).getKey()))
+                        {
+                            int pos = activity.GetAllEvents().indexOf(selectedEvent);
+                            activity.GetAllEvents().get(i).getAttendants().add(activity.getUser());
+                            if(activity.GetGoogleSignIn())
+                            {
+                                GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(getContext());
+                                db.collection("Events")
+                                        .document(String.valueOf(acct.getId()))
+                                        .collection("Events")
+                                        .document(activity.GetAllEventIds().get(pos))
+                                        .set(selectedEvent);
+                            }
 
+                            if(activity.GetFacebookSignIn())
+                            {
+                                db.collection("Events")
+                                        .document(LoginActivity.GetFacebookID())
+                                        .collection("Events")
+                                        .document(activity.GetAllEventIds().get(pos))
+                                        .set(selectedEvent);
+                            }
+                            db.collection("All Events")
+                                    .document(activity.GetAllEventIds().get(pos))
+                                    .set(selectedEvent);
+
+                            joinEventName.setText("Successfully joined the event!");
+                            joinEventOwner.setText("");
+                            joinEventLoc.setText("");
+                            joinEventTime.setText("");
+                            joinEventDesc.setText("");
+                            selectedEvent = null;
+                            joinEvent.setVisibility(View.GONE);
+                            clearEvent.setVisibility(View.GONE);
+                            break;
+                        }
+                    }
                 }
             }
         });

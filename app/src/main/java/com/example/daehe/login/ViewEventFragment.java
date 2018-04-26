@@ -53,45 +53,33 @@ public class ViewEventFragment extends Fragment {
         eventRecycler = (RecyclerView) myView.findViewById(R.id.events);
 
         events = new ArrayList<>();
-        if(activity.GetGoogleSignIn())
-        {
+         db.collection("All Events")
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
+                        events.clear();
+                        List<Event> types = documentSnapshots.toObjects(Event.class);
 
-            db.collection("Events")
-                    .document(activity.getGoogleId())
-                    .collection("Events")
-                    .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                        @Override
-                        public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
-                            events.clear();
-                            //Toast.makeText(getApplicationContext(),"ID: " + ids.get(0), Toast.LENGTH_SHORT).show();
-                            // Convert the whole Query Snapshot to a list
-                            // of objects directly! No need to fetch each
-                            // document.
-                            List<Event> types = documentSnapshots.toObjects(Event.class);
-                            // Add all to your list
-                            events.addAll(types);
-                            loadEventRecycler();
-                            Log.d(TAG, "onSuccess: " + events);
-                        }
-                    });
-        }
+                        ArrayList<Event> before = new ArrayList<>();
+                        // Add all to your list
+                        before.addAll(types);
 
-        if(activity.GetFacebookSignIn())
-        {
-            db.collection("Events")
-                    .document(LoginActivity.GetFacebookID())
-                    .collection("Events")
-                    .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                        @Override
-                        public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
-                            List<Event> types = documentSnapshots.toObjects(Event.class);
-                            // Add all to your list
-                            events.addAll(types);
-                            loadEventRecycler();
-                            Log.d(TAG, "onSuccess: " + events);
+                        for (Event event: before)
+                        {
+                            for(Event your: activity.GetEvents())
+                            {
+                                if(your.getKey().equals(event.getKey()))
+                                {
+                                    events.add(event);
+                                }
+                            }
                         }
-                    });
-        }
+
+
+                        loadEventRecycler();
+                        Log.d(TAG, "onSuccess: " + events);
+                    }
+                });
 
         return myView;
     }

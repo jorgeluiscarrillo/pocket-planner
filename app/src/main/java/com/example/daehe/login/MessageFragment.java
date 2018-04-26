@@ -43,7 +43,6 @@ public class MessageFragment extends Fragment {
         myView=inflater.inflate(R.layout.fragment_message,container,false);
 
         loadInbox();
-
         loadButton();
 
         return myView;
@@ -66,7 +65,7 @@ public class MessageFragment extends Fragment {
                             msgs.add(m);
                         }
 
-                        MessageAdapter adapter = new MessageAdapter(getActivity(), msgs);
+                        MessageAdapter adapter = new MessageAdapter(getApplicationContext(), msgs);
 
                         lvInbox.setAdapter(adapter);
 
@@ -76,7 +75,7 @@ public class MessageFragment extends Fragment {
                                 ReadMessageFragment rmf = new ReadMessageFragment();
                                 rmf.setMessage(msgs.get(i));
                                 rmf.setReadOnly(true);
-                                getActivity().getSupportFragmentManager()
+                                getFragmentManager()
                                         .beginTransaction( )
                                         .replace(R.id.contentframe, rmf)
                                         .addToBackStack(null)
@@ -93,7 +92,7 @@ public class MessageFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 ReadMessageFragment rmf = new ReadMessageFragment();
-                getActivity().getSupportFragmentManager().beginTransaction( )
+                getFragmentManager().beginTransaction( )
                         .replace(R.id.contentframe, rmf, "Read Message")
                         .addToBackStack(null)
                         .commit();
