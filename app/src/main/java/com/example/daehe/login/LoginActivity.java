@@ -230,6 +230,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         return email;
     }
 
+    public static void SignOut() {LoginManager.getInstance().logOut();}
+
     protected void setGooglePlusButtonText(SignInButton signInButton, String buttonText) {
         // Find the TextView that is inside of the SignInButton and set its text
         for (int i = 0; i < signInButton.getChildCount(); i++) {

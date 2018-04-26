@@ -111,13 +111,18 @@ public class ReadMessageFragment extends Fragment {
 
         String key = db.collection("Messages").document().getId();
 
-        db.collection("Messages").document(key).set(mMsg).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                Toast.makeText(getActivity(), "Message is sent", Toast.LENGTH_LONG).show();
-                clearFields();
-            }
-        });
+        if (!receiver.equals("")) {
+            db.collection("Messages").document(key).set(mMsg).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    Toast.makeText(getActivity(), "Message is sent", Toast.LENGTH_LONG).show();
+                    clearFields();
+                }
+            });
+        } else {
+            Toast.makeText(getActivity(), "You must choose a Receiver.", Toast.LENGTH_LONG).show();
+        }
+
     }
 
     public void setMessage(Message msg){

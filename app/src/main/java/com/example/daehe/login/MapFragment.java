@@ -152,7 +152,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         });
 
         loadMarkers();
-        hideSoftKeyboard();
+//        hideSoftKeyboard();
     }
 
     private void loadMarkers() {
@@ -340,6 +340,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         {
             mMap.clear();
             loadMarkers();
+            //hideSoftKeyboard();
         }
     }
 }

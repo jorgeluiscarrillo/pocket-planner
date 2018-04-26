@@ -84,27 +84,6 @@ public class ViewEventFragment extends Fragment {
         return myView;
     }
 
-    public void loadEvents()
-    {
-        ListView eventList = (ListView) myView.findViewById(R.id.event_list);
-
-        //Toast.makeText(getContext(), "2. There are " + MainActivity.events.size() + " events", Toast.LENGTH_SHORT).show();
-        ViewEventAdapter adapter = new ViewEventAdapter(getActivity(),activity.GetEvents());
-        eventList.setAdapter(adapter);
-
-        eventList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                ReadEventFragment ref = new ReadEventFragment();
-                ref.setEvent(activity.getEventFromList(i));
-                getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.contentframe,ref, "Read Event")
-                        .addToBackStack(null)
-                        .commit();
-            }
-        });
-    }
-
     public void loadEventRecycler()
     {
         adapter = new EventRecyclerAdapter(getContext(), events, activity);
