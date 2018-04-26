@@ -76,6 +76,7 @@ public class EventFragment extends Fragment {
     private Context mContext;
     private String lat;
     private String lon;
+    private Dialog invitation;
     private static final int PLACE_PICKER_REQUEST = 1;
 
     @Nullable
@@ -250,20 +251,24 @@ public class EventFragment extends Fragment {
 
                     }
 
-                    /*
-                    db.collection("Events").document("event").set(e).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Toast.makeText(c, "Event successfully created!", Toast.LENGTH_SHORT).show();
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(c, "ERROR" +e.toString(),
-                                            Toast.LENGTH_SHORT).show();
-                            Log.d("TAG", e.toString());
-                        }
-                    });*/
+                    android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
+                    builder.setMessage("Do you want to send the code to your friends now? (You can skip this step and manually send the code)")
+                            .setCancelable(true)
+                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    openInvitationDialog();
+                                }
+                            })
+                            .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                }
+                            })
+                            //Set your icon here
+                            .setTitle("Sign Out")
+                            .setIcon(R.drawable.ic_signout);
+                    android.support.v7.app.AlertDialog alert = builder.create();
+                    alert.show();//showing the dialog
 
                     if(activity.GetGoogleSignIn())
                     {
@@ -312,6 +317,28 @@ public class EventFragment extends Fragment {
             }
         });
 
+    }
+
+    private void openInvitationDialog(){
+        // custom dialog
+        invitation = new Dialog(getContext());
+        invitation.setContentView(R.layout.fragment_send_code);
+        invitation.setTitle("Invitation");
+
+        // set the custom dialog components - text, image and button
+        final EditText list_email = (EditText) invitation.findViewById(R.id.et_email_list);
+        Button cancelButton = (Button) invitation.findViewById(R.id.btn_skip);
+        Button sendButton = (Button) invitation.findViewById(R.id.btn_send_code)
+
+        // if button is clicked, close the custom dialog
+        sendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                
+            }
+        });
+
+        invitation.show();
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
