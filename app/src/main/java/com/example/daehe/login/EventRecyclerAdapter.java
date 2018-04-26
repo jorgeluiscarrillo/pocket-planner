@@ -36,7 +36,7 @@ public class EventRecyclerAdapter extends RecyclerView.Adapter<EventRecyclerAdap
             @Override
             public void onClick(View view) {
                 ReadEventFragment ref = new ReadEventFragment();
-                ref.setEvent(activity.getEventFromList(vHolder.getAdapterPosition()));
+                ref.setEvent(mEvent.get(vHolder.getAdapterPosition()));
                 activity.getSupportFragmentManager().beginTransaction()
                         .replace(R.id.contentframe,ref, "Read Event")
                         .addToBackStack(null)

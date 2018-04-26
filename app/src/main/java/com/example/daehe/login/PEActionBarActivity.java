@@ -191,10 +191,6 @@ public class PEActionBarActivity extends AppCompatActivity
                 }
                 else
                 {
-                    for(int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); ++i) {
-                        getSupportFragmentManager().popBackStack();
-                    }
-
                     getSupportFragmentManager().beginTransaction( )
                             .replace(R.id.contentframe, new EventFragment(), "Event")
                             .addToBackStack(null)
@@ -217,9 +213,6 @@ public class PEActionBarActivity extends AppCompatActivity
                 }
                 else
                 {
-                    for(int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); i++) {
-                        getSupportFragmentManager().popBackStack();
-                    }
                     getSupportFragmentManager().beginTransaction( )
                             .replace(R.id.contentframe, mesf, "Message")
                             .addToBackStack(null)
@@ -240,9 +233,6 @@ public class PEActionBarActivity extends AppCompatActivity
                 }
                 else
                 {
-                    for(int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); i++) {
-                        getSupportFragmentManager().popBackStack();
-                    }
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.contentframe, view, "View Event")
                             .addToBackStack(null)
@@ -261,9 +251,6 @@ public class PEActionBarActivity extends AppCompatActivity
                 }
                 else
                 {
-                    for(int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); i++) {
-                        getSupportFragmentManager().popBackStack();
-                    }
                     getSupportFragmentManager().beginTransaction( )
                             .replace(R.id.contentframe, new JoinEventFragment(), "Join Event")
                             .addToBackStack(null)
@@ -302,28 +289,36 @@ public class PEActionBarActivity extends AppCompatActivity
     }
 
     private void signOut(){
-        Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
-                new ResultCallback<Status>() {
-                    @Override
-                    public void onResult(Status status) {
-                        // ...
-                        Toast.makeText(getApplicationContext(),"Logged Out",Toast.LENGTH_SHORT).show();
-                    }
-                });
+        if(googleSignIn)
+        {
+            Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
+                    new ResultCallback<Status>() {
+                        @Override
+                        public void onResult(Status status) {
+                            // ...
+                            Toast.makeText(getApplicationContext(),"Logged Out",Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        }
+        else if(facebookSignIn)
+        {
+            LoginActivity.SignOut();
+        }
     }
 
     public void onBackPressed()
     {
         FragmentManager fm = getFragmentManager();
-        if(fm.getBackStackEntryCount()>0 )
-        {
-            fm.popBackStack();
-        }
-        else
+        MapFragment mf = (MapFragment) getSupportFragmentManager().findFragmentByTag("MAP");
+        if((mf != null && mf.isVisible()))
         {
             listenerRegistration.remove();
             allEventRegistration.remove();
-            super.onBackPressed();
+            this.finishAffinity();
+        }
+        else
+        {
+            getSupportFragmentManager().popBackStack();
         }
     }
 
