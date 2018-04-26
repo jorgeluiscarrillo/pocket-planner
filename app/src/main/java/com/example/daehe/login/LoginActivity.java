@@ -53,11 +53,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private User user = null;
     public static GoogleApiClient mGoogleApiClient;
     private SignInButton signInButton;
-    private Button signOutButton;
-    private Button proceedButton;
-    private Button detour;
-    private Button disconnectButton;
-    private LinearLayout signOutView;
     private ProgressDialog mProgressDialog;
     GoogleSignInAccount acct;
     private ImageView pe_logo;
@@ -65,7 +60,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private LoginButton btnFBLogin;
     private CallbackManager cbmFacebook;
     private static String email;
-    private boolean loggedIn = false;
+    private boolean loggedIn;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -87,9 +82,16 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
         btnFBLogin = (LoginButton) findViewById(R.id.facebook_sign_in_button);
         signInButton = (SignInButton) findViewById(R.id.google_sign_in_button);
-        signOutButton = (Button) findViewById(R.id.sign_out_button);
-        detour = (Button) findViewById(R.id.detour);
         cbmFacebook = CallbackManager.Factory.create();
+
+        Bundle b = getIntent().getExtras();
+        if(!b.isEmpty()){
+            loggedIn = b.getBoolean("login");
+        }
+        else{
+            loggedIn = true;
+        }
+
 
         btnFBLogin.registerCallback(cbmFacebook, new FacebookCallback<LoginResult>() {
             @Override
@@ -105,7 +107,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                 }
                             }
                         }).executeAsync();
-                updateUI(true);
+                updateUI();
             }
 
             @Override
@@ -129,38 +131,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         });
         setGooglePlusButtonText(signInButton, "Sign in with Google");
 
-        signOutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(mGoogleApiClient != null && mGoogleApiClient.isConnected())
-                {
-                    Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
-                            new ResultCallback<Status>() {
-                                @Override
-                                public void onResult(Status status) {
-                                    updateUI(false);
-                                }
-                            });
-                }
-                if (isLoggedInFB())
-                {
 
-                    LoginManager.getInstance().logOut();
-                    updateUI(false);
-                }
-            }
-
-        });
-
-        if(isGooglePlayServicesInstalled()) {
-            proceedButton = (Button) findViewById(R.id.proceed);
-            proceedButton.setOnClickListener(new View.OnClickListener(){
-                @Override
-                public void onClick(View v){
-                    Intent mapIntent = new Intent(LoginActivity.this, MainActivity.class);
-                    startActivity(mapIntent);
-                }
-            });
+        if(!mGoogleApiClient.isConnected()){
+            updateUI();
         }
     }
 
@@ -180,15 +153,15 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             // If the user has not previously signed in on this device or the sign-in has expired,
             // this asynchronous branch will attempt to sign in the user silently.  Cross-device
             // single sign-on will occur in this branch.
-            showProgressDialog();
+
             opr.setResultCallback(new ResultCallback<GoogleSignInResult>() {
                 @Override
                 public void onResult(GoogleSignInResult googleSignInResult) {
-                    hideProgressDialog();
                     handleSignInResult(googleSignInResult);
                 }
             });
         }
+
     }
 
     @Override
@@ -211,25 +184,17 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             // Signed in successfully, show authenticated UI.
             acct = result.getSignInAccount();
             //Similarly you can get the email and photourl using acct.getEmail() and  acct.getPhotoUrl()
-
-            updateUI(true);
+            loggedIn = true;
+            updateUI();
         } else {
-            // Signed out, show unauthenticated UI.
-            updateUI(false);
+
         }
     }
 
-    private void updateUI(boolean signedIn) {
-        if (signedIn || isLoggedInFB()) {
-            signInButton.setVisibility(View.GONE);
-            btnFBLogin.setVisibility(View.GONE);
-            signOutButton.setVisibility(View.VISIBLE);
-            proceedButton.setVisibility(View.VISIBLE);
-        } else {
-            signInButton.setVisibility(View.VISIBLE);
-            btnFBLogin.setVisibility(View.VISIBLE);
-            signOutButton.setVisibility(View.GONE);
-            proceedButton.setVisibility(View.GONE);
+    private void updateUI() {
+        if (loggedIn || isLoggedInFB()) {
+            Intent mapIntent = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(mapIntent);
         }
     }
 
@@ -238,43 +203,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         // An unresolvable error has occurred and Google APIs (including Sign-In) will not
         // be available.
         Log.d(TAG, "onConnectionFailed:" + connectionResult);
-    }
-
-    private void showProgressDialog() {
-        if (mProgressDialog == null) {
-            mProgressDialog = new ProgressDialog(this);
-            mProgressDialog.setMessage(getString(R.string.loading));
-            mProgressDialog.setIndeterminate(true);
-        }
-
-        mProgressDialog.show();
-    }
-
-    private void hideProgressDialog() {
-        if (mProgressDialog != null && mProgressDialog.isShowing()) {
-            mProgressDialog.hide();
-        }
-
-    }
-
-    public boolean isGooglePlayServicesInstalled() {
-        Log.d(TAG, "isGooglePlayServicesInstalled: Checking Google Play services version");
-
-        int available = GoogleApiAvailability
-                .getInstance().isGooglePlayServicesAvailable(LoginActivity.this);
-        if(available == ConnectionResult.SUCCESS) {
-            Log.d(TAG, "isGooglePlayServicesInstalled: Google Play services are working");
-            return true;
-        } else if(GoogleApiAvailability.getInstance().isUserResolvableError(available)) {
-            Log.d(TAG, "isGooglePlayServicesInstalled(): Fixable error occurred");
-            Dialog dialog = GoogleApiAvailability.getInstance()
-                    .getErrorDialog(LoginActivity.this, available, ERROR_DIALOG_REQUEST);
-            dialog.show();
-        } else {
-            Toast.makeText(this, "Google Play services not installed",
-                    Toast.LENGTH_SHORT).show();
-        }
-        return false;
     }
 
     /**
