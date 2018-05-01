@@ -314,6 +314,8 @@ public class EventFragment extends Fragment {
                     location.setText("");
                     date.setText("");
                     startTime.setText("");
+                    eventDescription = "";
+                    updateDes();
                     Toast.makeText(getContext(), "Event successfully created!", Toast.LENGTH_SHORT).show();
                 }
             }

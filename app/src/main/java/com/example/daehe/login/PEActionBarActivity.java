@@ -449,4 +449,16 @@ public class PEActionBarActivity extends AppCompatActivity
     public String getGoogleId() { return GoogleSignIn.getLastSignedInAccount(this).getId(); }
 
     public ArrayList<String> GetAllEventIds() { return idsAll; }
+
+    public int GetEventByCode(String code)
+    {
+        for(int i = 0; i < allEvents.size(); i++)
+        {
+            if(code.equals(allEvents.get(i).getKey()))
+            {
+                return allEvents.indexOf(allEvents.get(i));
+            }
+        }
+        return -1;
+    }
 }

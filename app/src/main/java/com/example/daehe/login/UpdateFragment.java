@@ -36,6 +36,7 @@ import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -74,6 +75,8 @@ public class UpdateFragment extends Fragment {
     private FragmentManager fragMan;
     private PEActionBarActivity activity;
     private Context mContext;
+    private LatLng eventLatLng;
+    private String lat;
     private static final int PLACE_PICKER_REQUEST = 1;
 
     @Nullable
@@ -112,6 +115,7 @@ public class UpdateFragment extends Fragment {
         date.setText(sdf.format(eDate));
         startTime.setText(sdfTime.format(eDate));
         eventDescription = updatedEvent.getDescription();
+        updateDes();
 
         final DatePickerDialog.OnDateSetListener datePick = new DatePickerDialog.OnDateSetListener() {
             @Override
@@ -246,7 +250,7 @@ public class UpdateFragment extends Fragment {
                     {
 
                     }
-                    int pos = activity.GetEvents().indexOf(updatedEvent);
+                    int pos = activity.GetEventByCode(updatedEvent.getKey());
                     updatedEvent.setName(eventName);
                     updatedEvent.setLocation(eventLoc);
                     updatedEvent.setDate(inputDate);
@@ -258,11 +262,11 @@ public class UpdateFragment extends Fragment {
                         db.collection("Events")
                                 .document(acct.getId())
                                 .collection("Events")
-                                .document(activity.GetEventIds().get(pos))
+                                .document(activity.GetAllEventIds().get(pos))
                                 .set(updatedEvent);
 
                         db.collection("All Events")
-                                .document(activity.GetEventIds().get(pos))
+                                .document(activity.GetAllEventIds().get(pos))
                                 .set(updatedEvent);
                     }
 
@@ -271,14 +275,15 @@ public class UpdateFragment extends Fragment {
                         db.collection("Events")
                                 .document(LoginActivity.GetFacebookID())
                                 .collection("Events")
-                                .document(activity.GetEventIds().get(pos))
+                                .document(activity.GetAllEventIds().get(pos))
                                 .set(updatedEvent);
 
                         db.collection("All Events")
-                                .document(activity.GetEventIds().get(pos))
+                                .document(activity.GetAllEventIds().get(pos))
                                 .set(updatedEvent);
                     }
                 }
+                Toast.makeText(getContext(),"Event was updated!", Toast.LENGTH_SHORT);
                 fragMan.popBackStack();
             }
         });
@@ -288,6 +293,9 @@ public class UpdateFragment extends Fragment {
         if (requestCode == PLACE_PICKER_REQUEST) {
             if (resultCode == RESULT_OK) {
                 Place place = PlacePicker.getPlace(mContext, data);
+                eventLatLng = place.getLatLng();
+                location.setText(place.getAddress());
+                lat = place.getLatLng().toString();
             }
         }
     }
@@ -306,5 +314,9 @@ public class UpdateFragment extends Fragment {
 
     private boolean isEmpty(EditText etText) {
         return etText.getText().toString().trim().length() == 0;
+    }
+
+    private void updateDes(){
+        addDescription.setText(eventDescription);
     }
 }
