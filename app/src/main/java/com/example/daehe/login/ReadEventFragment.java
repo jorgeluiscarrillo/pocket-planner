@@ -143,7 +143,7 @@ public class ReadEventFragment extends Fragment {
                                 event.getAttendants().remove(i);
                             }
                         }
-                        int pos = activity.GetEvents().indexOf(event);
+                        int pos = activity.GetEventByCode(event.getKey());
 
                         if(activity.GetGoogleSignIn())
                         {
@@ -151,7 +151,7 @@ public class ReadEventFragment extends Fragment {
                             db.collection("Events")
                                     .document(acct.getId())
                                     .collection("Events")
-                                    .document(activity.GetEventIds().get(pos))
+                                    .document(activity.GetAllEventIds().get(pos))
                                     .delete()
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
@@ -172,7 +172,7 @@ public class ReadEventFragment extends Fragment {
                             db.collection("Events")
                                     .document(LoginActivity.GetFacebookID())
                                     .collection("Events")
-                                    .document(activity.GetEventIds().get(pos))
+                                    .document(activity.GetAllEventIds().get(pos))
                                     .delete()
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
@@ -188,7 +188,7 @@ public class ReadEventFragment extends Fragment {
                                     });
                         }
                         db.collection("All Events")
-                                .document(activity.GetEventIds().get(pos))
+                                .document(activity.GetAllEventIds().get(pos))
                                 .set(event);
                         FragmentManager fm = getFragmentManager();
                         activity.getView().notifyData();
