@@ -26,14 +26,14 @@ You can also manually send the code by sending a message. The joining code is av
         android:layout_alignParentBottom="true">
 
         <Button
-            android:id="@+id/btn_send_code"
+            android:id="@+id/btn_skip"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:text="Skip" />
 
         <Button
-            android:id="@+id/btn_skip"
+            android:id="@+id/btn_send_code"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"

@@ -1,5 +1,7 @@
 package com.example.daehe.login;
 
+import android.support.annotation.NonNull;
+
 import java.sql.Time;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -9,7 +11,7 @@ import java.util.Date;
  * Created by Daehee on 2018-02-24.
  */
 
-public class Message {
+public class Message implements Comparable<Message> {
     private String mTitle;
     private String mSender;
     private String mReceiver;
@@ -45,4 +47,9 @@ public class Message {
     public void setContent(String content) {mContent = content;}
     public void setImportant(boolean important) {mMarkAsImportant = important;}
     public void setRead(boolean read) {mRead = read;}
+
+    @Override
+    public int compareTo(@NonNull Message message) {
+        return -this.getDateAndTime().compareTo(message.getDateAndTime());
+    }
 }

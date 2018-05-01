@@ -49,6 +49,8 @@ import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.UUID;
@@ -77,6 +79,7 @@ public class EventFragment extends Fragment {
     private String lat;
     private String lon;
     private Dialog invitation;
+    private String newKey;
     private static final int PLACE_PICKER_REQUEST = 1;
 
     @Nullable
@@ -206,7 +209,7 @@ public class EventFragment extends Fragment {
                 eventTime = startTime.getText().toString();
 
                 boolean duplicate = false;
-                String newKey = "";
+
 
                 do{
                     newKey = UUID.randomUUID().toString().substring(0,4);
@@ -251,8 +254,8 @@ public class EventFragment extends Fragment {
 
                     }
 
-                    android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
-                    builder.setMessage("Do you want to send the code to your friends now? (You can skip this step and manually send the code)")
+                    android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(getContext());
+                    builder.setMessage("Event successfully created. Do you want to send the code to your friends now? (You can skip this step and manually send the code)")
                             .setCancelable(true)
                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
@@ -265,15 +268,14 @@ public class EventFragment extends Fragment {
                                 }
                             })
                             //Set your icon here
-                            .setTitle("Sign Out")
-                            .setIcon(R.drawable.ic_signout);
+                            .setTitle("Invitation");
                     android.support.v7.app.AlertDialog alert = builder.create();
                     alert.show();//showing the dialog
 
                     if(activity.GetGoogleSignIn())
                     {
                         GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(getContext());
-                        Event e = new Event(eventName,eventLoc,inputDate,eventDescription,acct.getDisplayName(), Calendar.getInstance().getTime(), false, lat, newKey, false, new ArrayList<User>());
+                        Event e = new Event(eventName,eventLoc,inputDate,eventDescription, acct.getDisplayName(), Calendar.getInstance().getTime(), false, lat, newKey, false, new ArrayList<User>());
 
                         DocumentReference doc = db.collection("All Events")
                                 .document();
@@ -328,13 +330,51 @@ public class EventFragment extends Fragment {
         // set the custom dialog components - text, image and button
         final EditText list_email = (EditText) invitation.findViewById(R.id.et_email_list);
         Button cancelButton = (Button) invitation.findViewById(R.id.btn_skip);
-        Button sendButton = (Button) invitation.findViewById(R.id.btn_send_code)
+        Button sendButton = (Button) invitation.findViewById(R.id.btn_send_code);
 
         // if button is clicked, close the custom dialog
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                
+                String[] emails = list_email.getText().toString().split("\\s+");
+                for(String s : emails){
+                    String sender;
+                    String senderName;
+                    if(activity.GetGoogleSignIn()) {
+                        sender = GoogleSignIn.getLastSignedInAccount(getContext()).getDisplayName();
+                        senderName = sender;
+                    }
+                    else {
+                        sender = "No Reply";
+                        senderName = LoginActivity.GetDisplayName();
+                    }
+                    String receiver = s;
+                    String title = "Invitation: " + eventName;
+                    String body = "This is code for joining the event, " + eventName + ", hosted by " + senderName +
+                            ".\nEnter this code in 'Join Event' menu to join the event." +
+                            "\n\t Code: " + newKey;
+                    Message msg = new Message(title, sender, receiver, body);
+
+                    CollectionReference cr = db.collection("Users");
+
+                    String key = db.collection("Messages").document().getId();
+
+                    if (!receiver.equals("")) {
+                        db.collection("Messages").document(key).set(msg).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                            }
+                        });
+                    }
+                }
+                Toast.makeText(getActivity(), "Invitations are sent", Toast.LENGTH_LONG).show();
+                invitation.dismiss();
+            }
+        });
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                invitation.dismiss();
             }
         });
 

@@ -25,6 +25,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
@@ -64,6 +65,8 @@ public class MessageFragment extends Fragment {
                             Message m = d.toObject(Message.class);
                             msgs.add(m);
                         }
+
+                        Collections.sort(msgs);
 
                         MessageAdapter adapter = new MessageAdapter(getApplicationContext(), msgs);
 

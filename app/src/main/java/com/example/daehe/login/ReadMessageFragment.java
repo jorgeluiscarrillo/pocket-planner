@@ -120,7 +120,7 @@ public class ReadMessageFragment extends Fragment {
                 }
             });
         } else {
-            Toast.makeText(getActivity(), "You must choose a Receiver.", Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), "You must specify a Receiver.", Toast.LENGTH_LONG).show();
         }
 
     }
