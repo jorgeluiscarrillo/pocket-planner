@@ -156,9 +156,21 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     }
 
     private void loadMarkers() {
-        ArrayList<Event> userEvents = activity.GetEvents();
+        ArrayList<Event> userEvents = activity.GetAllEvents();
+        ArrayList<Event> mark = new ArrayList<>();
 
-        for (Event e : userEvents) {
+        for (Event event: userEvents)
+        {
+            for(Event your: activity.GetEvents())
+            {
+                if(your.getKey().equals(event.getKey()))
+                {
+                    mark.add(event);
+                }
+            }
+        }
+
+        for (Event e : mark) {
             String latLng = e.getLat();
             String[] tokens = latLng.split(",", 2);
             String[] lat = tokens[0].split("\\(",2);
