@@ -1,7 +1,7 @@
 # Pocket Planner
 🎉 A simple and hassle-free Android application to plan and organize social events with your friends! 🎉
 
-![preview](https://gph.is/g/am6VXpJ)
+![preview](https://media.giphy.com/media/LpF2F3yByo8SbO61Zs/giphy.gif)
 
 Video demo can be found ![here](https://youtu.be/LCAs88bXHnk).
 
